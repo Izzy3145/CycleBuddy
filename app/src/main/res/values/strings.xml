@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">CycleBuddy</string>
+
+    <!-- navigation titles -->
+    <string name="title_ride">Ride</string>
+    <string name="title_search">Search</string>
+    <string name="title_offer">Offer</string>
+    <string name="title_messages">Messages</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="home">Home Fragment</string>
+    <string name="search">Search Fragment</string>
+    <string name="offer">Offer Fragment</string>
+    <string name="messages">Messages Fragment</string>
+
 </resources>
