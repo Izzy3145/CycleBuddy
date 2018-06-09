@@ -4,25 +4,25 @@
 
     <item
         android:id="@+id/navigation_ride"
-        android:icon="@drawable/baseline_directions_bike_black_18dp"
+        android:icon="@drawable/ic_bike_24px"
         android:title="@string/title_ride"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/navigation_search"
-        android:icon="@drawable/baseline_search_black_18dp"
+        android:icon="@drawable/ic_search_24px"
         android:title="@string/title_search"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/navigation_offer"
-        android:icon="@drawable/baseline_group_black_18dp"
+        android:icon="@drawable/ic_smile_24px"
         android:title="@string/title_offer"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/navigation_messages"
-        android:icon="@drawable/baseline_message_black_18dp"
+        android:icon="@drawable/ic_message_24px"
         android:title="@string/title_messages"
         app:showAsAction="always"/>
 

@@ -2,20 +2,21 @@ package com.example.android.cyclebuddy;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
+import com.example.android.cyclebuddy.ui.MessagesFragment;
+import com.example.android.cyclebuddy.ui.OfferFragment;
+import com.example.android.cyclebuddy.ui.RideFragment;
+import com.example.android.cyclebuddy.ui.SearchFragment;
 import com.firebase.ui.auth.AuthUI;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,11 +24,15 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
-import timber.log.Timber;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RideFragment.OnNavigationItemChanged {
 
+    @BindView(R.id.navigation)BottomNavigationView navigation;
     private FragmentManager fragmentManager;
+    private Bundle mReceivedExtras;
+
     private String mUsername;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -38,17 +43,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        fragmentManager = getSupportFragmentManager();
+        ButterKnife.bind(this);
 
         //set up Bottom Navigation
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationHelper.removeShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        //inflate initial fragment
+        if(savedInstanceState != null){
+            return;
+        }
+
+        if(getIntent().getExtras() != null){
+            mReceivedExtras = getIntent().getExtras();
+            //TODO: set these extras as arguements to other fragments
+        }
+
+        fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, RideFragment.newInstance());
+        transaction.addToBackStack(null);
         transaction.commit();
-        //TODO: add butterknife
 
         //set up Firebase Authentication
         mUsername = ANONYMOUS;
@@ -113,13 +128,20 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = MessagesFragment.newInstance();
                     break;
             }
-            FragmentTransaction fragmentTransaction1 = fragmentManager.beginTransaction();
-            fragmentTransaction1.replace(R.id.fragment_container, selectedFragment);
-            fragmentTransaction1.commit();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
             return true;
         }
     };
 
+    @Override
+    public void changeHighlightedIcon(int menuItemId) {
+        View view = navigation.findViewById(menuItemId);
+        view.performClick();
+        //TODO: when pressing back, make sure the correct icon is highlighted
+    }
 
     //get result from Authentication UI
     @Override
