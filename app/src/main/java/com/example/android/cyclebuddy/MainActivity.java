@@ -8,6 +8,9 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements RideFragment.OnNavigationItemChanged {
 
     @BindView(R.id.navigation)BottomNavigationView navigation;
+    @BindView(R.id.main_toolbar) Toolbar mainToolbar;
     private FragmentManager fragmentManager;
     private Bundle mReceivedExtras;
 
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setSupportActionBar(mainToolbar);
 
         //set up Bottom Navigation
         BottomNavigationHelper.removeShiftMode(navigation);
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
         if(getIntent().getExtras() != null){
             mReceivedExtras = getIntent().getExtras();
-            //TODO: set these extras as arguements to other fragments
+            //TODO: set these extras as arguments to other fragments
         }
 
         fragmentManager = getFragmentManager();
@@ -92,6 +97,25 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
             }
         };
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.view_own_profile:
+                Intent startProfileActivity = new Intent(this, ProfileActivity.class);
+                startActivity(startProfileActivity);
+                //TODO: send an intent data so that the right version of view profile will open
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }    }
 
     @Override
     protected void onPause() {

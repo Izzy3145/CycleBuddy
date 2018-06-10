@@ -6,6 +6,9 @@
     <string name="title_search">Search</string>
     <string name="title_offer">Offer</string>
     <string name="title_messages">Messages</string>
+    <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="home">Home Fragment</string>
