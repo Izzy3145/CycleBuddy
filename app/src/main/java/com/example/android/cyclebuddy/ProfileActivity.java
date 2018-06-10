@@ -1,6 +1,7 @@
 package com.example.android.cyclebuddy;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.cyclebuddy.R;
+import com.firebase.ui.auth.AuthUI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +19,7 @@ import butterknife.ButterKnife;
 public class ProfileActivity extends AppCompatActivity {
 
     @BindView(R.id.profile_toolbar) Toolbar profileToolbar;
+    //TODO: enable reading from database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,9 @@ public class ProfileActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(profileToolbar);
 
+        ActionBar ab = getSupportActionBar();
+        if(ab != null){
+            ab.setDisplayHomeAsUpEnabled(true);}
     }
 
     @Override
@@ -38,10 +44,11 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.edit_profile:
-                Toast.makeText(this, "Editing Profile",Toast.LENGTH_SHORT).show();
+                Intent startEditProfile = new Intent(this, EditProfileActivity.class);
+                startActivity(startEditProfile);
                 return true;
             case R.id.sign_out:
-                Toast.makeText(this, "Signing Out",Toast.LENGTH_SHORT).show();
+                AuthUI.getInstance().signOut(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

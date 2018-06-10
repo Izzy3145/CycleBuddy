@@ -10,16 +10,11 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="sign_out">Sign Out</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="home">Home Fragment</string>
+    <string name="home">Cycle Buddy</string>
     <string name="search">Search Fragment</string>
     <string name="offer">Offer Fragment</string>
     <string name="messages">Messages Fragment</string>
     <string name="searchsplash">Search Splash Fragment</string>
     <string name="offersplash">Offer Splash Fragment</string>
-
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

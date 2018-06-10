@@ -10,15 +10,6 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/search"
-        android:textSize="24sp"
-        tools:layout_editor_absoluteX="36dp"
-        tools:layout_editor_absoluteY="70dp" />
-
-    <Button
-        android:id="@+id/sf_search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -26,10 +17,23 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/search"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/sf_search_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/sf_search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="84dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 
