@@ -17,4 +17,11 @@
     <string name="searchsplash">Search Splash Fragment</string>
     <string name="offersplash">Offer Splash Fragment</string>
 
+    <!-- profile strings -->
+    <string name="name">User name</string>
+    <string name="mini_bio">Mini bio</string>
+    <string name="buddy_type">Are you a buddy, or in need of a buddy?</string>
+
+
+
 </resources>

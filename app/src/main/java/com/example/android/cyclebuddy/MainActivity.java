@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.view_own_profile:
-                Intent startProfileActivity = new Intent(this, ProfileActivity.class);
+                Intent startProfileActivity = new Intent(this, ViewProfileActivity.class);
                 startActivity(startProfileActivity);
                 //TODO: send an intent data so that the right version of view profile will open
                 return true;

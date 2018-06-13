@@ -13,6 +13,10 @@ public class EditProfileActivity extends AppCompatActivity {
     //TODO: enable writing to database
     //TODO: add changes listener with "Discard" dialogue
 
+    //TODO: either open with a Uri (editing existing profile), or no Uri (new profile)
+    //TODO: add setOnTouchListeners to all edit texts and buttons
+
+
     @BindView(R.id.edit_profile_toolbar) Toolbar editProfileToolbar;
 
 

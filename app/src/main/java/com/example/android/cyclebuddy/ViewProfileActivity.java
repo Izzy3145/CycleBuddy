@@ -16,7 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ViewProfileActivity extends AppCompatActivity {
 
     @BindView(R.id.profile_toolbar) Toolbar profileToolbar;
     //TODO: enable reading from database
