@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements RideFragment.OnNavigationItemChanged {
 
@@ -38,10 +39,16 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     private Bundle mReceivedExtras;
 
     private String mUsername;
+    private String userID;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseUser mFirebaseUser;
+
+    public static final String USER_ID = "user ID";
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
+
+    //TODO: set up sharedPreferences to pass userID around
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,15 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 }
             }
         };
+
+        mFirebaseUser = mAuth.getCurrentUser();
+        if(mFirebaseUser != null){
+            userID = mFirebaseUser.getUid();
+            Timber.v(userID);
+
+        } else {
+            Timber.v(userID);
+        }
     }
 
     @Override
@@ -110,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         switch (item.getItemId()){
             case R.id.view_own_profile:
                 Intent startProfileActivity = new Intent(this, ViewProfileActivity.class);
+                startProfileActivity.putExtra(USER_ID, userID);
                 startActivity(startProfileActivity);
                 //TODO: send an intent data so that the right version of view profile will open
                 return true;

@@ -19,9 +19,18 @@
 
     <!-- profile strings -->
     <string name="name">User name</string>
+    <string name="save_button">Save</string>
     <string name="mini_bio">Mini bio</string>
     <string name="buddy_type">Are you a buddy, or in need of a buddy?</string>
-
+    <string name="be_a_buddy">Be a buddy</string>
+    <string name="need_a_buddy">Need a buddy</string>
+    <string name="both">Both</string>
+    <string name="none_selected">None selected</string>
+    <string name="unsaved_changes_message">Leave without saving changes?</string>
+    <string name="discard">Discard</string>
+    <string name="continue_editing">Continue editing</string>
+    <string name="image_save_failed">Image failed to save</string>
+    <string name="task_not_complete">Task not complete</string>
 
 
 </resources>
