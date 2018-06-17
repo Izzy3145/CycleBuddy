@@ -1,24 +1,36 @@
 package com.example.android.cyclebuddy.model;
 
+import com.firebase.ui.auth.data.model.User;
+
 public class UserProfile {
 
     private String userID;
     private String user;
     private String buddyType;
+    private String yearsCycling;
+    private String cyclingFrequency;
     private String miniBio;
     private String photoUrl;
 
-    public UserProfile(String userID, String user, String buddyType, String miniBio){
+    public UserProfile(){}
+
+    public UserProfile(String userID, String user, String buddyType, String yearsCycling,
+                       String cyclingFrequency, String miniBio){
         this.userID = userID;
         this.user = user;
         this.buddyType = buddyType;
+        this.yearsCycling = yearsCycling;
+        this.cyclingFrequency = cyclingFrequency;
         this.miniBio = miniBio;
     }
 
-    public UserProfile(String userID, String user, String buddyType, String miniBio, String photoUrl){
+    public UserProfile(String userID, String user, String buddyType, String yearsCycling,
+                       String cyclingFrequency, String miniBio, String photoUrl){
         this.userID = userID;
         this.user = user;
         this.buddyType = buddyType;
+        this.yearsCycling = yearsCycling;
+        this.cyclingFrequency = cyclingFrequency;
         this.miniBio = miniBio;
         this.photoUrl = photoUrl;
     }
@@ -29,6 +41,14 @@ public class UserProfile {
 
     public String getUser(){
         return user;
+    }
+
+    public String getYearsCycling(){
+        return yearsCycling;
+    }
+
+    public String getCyclingFrequency(){
+        return cyclingFrequency;
     }
 
     public String getBuddyType(){
@@ -53,6 +73,13 @@ public class UserProfile {
 
     public void setBuddyType(String buddyType){
         this.buddyType = buddyType;
+    }
+
+    public void setYearsCycling(String yearsCycling){
+        this.yearsCycling = yearsCycling;
+    }
+    public void setCyclingFrequency(String cyclingFrequency){
+        this.cyclingFrequency = cyclingFrequency;
     }
 
     public void setMiniBio(String miniBio){

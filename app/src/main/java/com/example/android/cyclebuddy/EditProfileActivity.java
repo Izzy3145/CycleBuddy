@@ -59,6 +59,9 @@ public class EditProfileActivity extends AppCompatActivity {
     @BindView(R.id.edit_profile_toolbar) Toolbar editProfileToolbar;
     @BindView(R.id.profile_image_view) ImageView profileImageView;
     @BindView(R.id.spinner_buddy_type) Spinner buddyTypeSpinner;
+    @BindView(R.id.spinner_years_of_cycling) Spinner yearsCyclingSpinner;
+    @BindView(R.id.spinner_cycling_frequency) Spinner cyclingFrequencySpinner;
+
     @BindView(R.id.save_button) Button saveButton;
     @BindView(R.id.name_edit_text) EditText nameEditText;
     @BindView(R.id.bio_edit_text) EditText bioEditText;
@@ -72,6 +75,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private String mUserID;
     private String mName;
     private String mBuddyType;
+    private String mYearsCycling;
+    private String mCyclingFrequency;
     private String mMiniBio;
     private String mPhotoUrl = null;
 
@@ -119,7 +124,9 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        setupSpinner();
+        setupBuddySpinner();
+        setupYearsSpinner();
+        setupFrequencySpinner();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,11 +136,15 @@ public class EditProfileActivity extends AppCompatActivity {
                 mMiniBio = bioEditText.getText().toString();
 
                 if(mPhotoUrl == null){
-                    newUser = new UserProfile(mUserID, mName, mBuddyType, mMiniBio);
+                    newUser = new UserProfile(mUserID, mName, mBuddyType, mYearsCycling,
+                            mCyclingFrequency, mMiniBio);
                 } else {
-                    newUser = new UserProfile(mUserID, mName, mBuddyType, mMiniBio, mPhotoUrl);
+                    newUser = new UserProfile(mUserID, mName, mBuddyType, mMiniBio, mYearsCycling,
+                            mCyclingFrequency, mPhotoUrl);
                 }
-                mProfileDatabaseReference.push().setValue(newUser);
+                mProfileDatabaseReference.setValue(newUser);
+
+                finish();
             }
         });
 
@@ -141,6 +152,8 @@ public class EditProfileActivity extends AppCompatActivity {
         nameEditText.setOnTouchListener(mTouchListener);
         bioEditText.setOnTouchListener(mTouchListener);
         buddyTypeSpinner.setOnTouchListener(mTouchListener);
+        yearsCyclingSpinner.setOnTouchListener(mTouchListener);
+        cyclingFrequencySpinner.setOnTouchListener(mTouchListener);
 
     }
 
@@ -229,8 +242,8 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    //set up spinner
-    private void setupSpinner() {
+    //set up buddy type spinner
+    private void setupBuddySpinner() {
         //set up array adapter to take spinner options
         ArrayAdapter typeSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.array_buddy_options, android.R.layout.simple_spinner_item);
@@ -258,6 +271,76 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 mBuddyType = getString(R.string.none_selected);
+            }
+        });
+    }
+
+    //set up years spinner
+    private void setupYearsSpinner() {
+        //set up array adapter to take spinner options
+        ArrayAdapter yearsSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_years_of_cycling, android.R.layout.simple_spinner_item);
+        yearsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        //apply spinner to adapter
+        yearsCyclingSpinner.setAdapter(yearsSpinnerAdapter);
+
+        // Set the integer mSelected to the constant values
+        yearsCyclingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.not_since_child))) {
+                        mYearsCycling = getString(R.string.not_since_child);
+                    } else if (selection.equals(getString(R.string.zero_to_one))) {
+                        mYearsCycling = getString(R.string.zero_to_one);
+                    } else if (selection.equals(getString(R.string.one_to_three))) {
+                        mYearsCycling = getString(R.string.one_to_three);
+                    } else if (selection.equals(getString(R.string.very_long))) {
+                        mYearsCycling = getString(R.string.very_long);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mYearsCycling = getString(R.string.none_selected);
+            }
+        });
+    }
+
+    //set up years spinner
+    private void setupFrequencySpinner() {
+        //set up array adapter to take spinner options
+        ArrayAdapter yearsSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_cycling_frequency, android.R.layout.simple_spinner_item);
+        yearsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        //apply spinner to adapter
+        cyclingFrequencySpinner.setAdapter(yearsSpinnerAdapter);
+
+        // Set the integer mSelected to the constant values
+        cyclingFrequencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.once_month))) {
+                        mCyclingFrequency = getString(R.string.once_month);
+                    } else if (selection.equals(getString(R.string.once_week))) {
+                        mCyclingFrequency = getString(R.string.once_week);
+                    } else if (selection.equals(getString(R.string.several_days))) {
+                        mCyclingFrequency = getString(R.string.several_days);
+                    } else if (selection.equals(getString(R.string.everyday))) {
+                        mCyclingFrequency = getString(R.string.everyday);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mYearsCycling = getString(R.string.none_selected);
             }
         });
     }

@@ -2,14 +2,23 @@ package com.example.android.cyclebuddy.ui;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.android.cyclebuddy.R;
+import com.example.android.cyclebuddy.model.OfferedRoute;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +33,24 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class OfferFragment extends Fragment implements View.OnClickListener{
+
     @BindView(R.id.of_offer_button) Button ofOfferButton;
+    @BindView(R.id.offer_from_edit_text) EditText ofFromEditText;
+    @BindView(R.id.offer_via_edit_text) EditText ofViaEditText;
+    @BindView(R.id.offer_to_edit_text) EditText ofToEditText;
+    @BindView(R.id.of_duration_edit_text) EditText ofDurationEditText;
+
+
     FragmentManager fm;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mOfferDatabaseReference;
+
+    private String mFrom;
+    private String mTo;
+    private String mVia;
+    private int mDuration;
+    private String mSharedPrefUserID;
+
 
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -65,6 +90,17 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fm = getActivity().getFragmentManager();
+        //get reference to the database
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        //get a reference to the correct child in the database
+        mOfferDatabaseReference = mFirebaseDatabase.getReference().child("Offered");
+        //get userID from sharedpreferences
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mSharedPrefUserID = sharedPreferences.getString("USER_ID","");
+        if (mSharedPrefUserID.equals("") ){
+        } else {
+            ofFromEditText.setText(mSharedPrefUserID);
+        }
     }
 
     @Override
@@ -74,12 +110,21 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_offer, container, false);
         ButterKnife.bind(this, view);
         ofOfferButton.setOnClickListener(this);
-
         return view;
     }
 
     @Override
     public void onClick(View view) {
+        //save offered route to database
+        mFrom = ofFromEditText.getText().toString();
+        mVia = ofViaEditText.getText().toString();
+        mTo = ofToEditText.getText().toString();
+        mDuration = Integer.parseInt(ofDurationEditText.getText().toString());
+
+        OfferedRoute newOfferedRoute = new OfferedRoute(mFrom, mVia, mTo, mDuration);
+        mOfferDatabaseReference.push().setValue(newOfferedRoute);
+
+        //and then display the offer splash fragment
         Fragment osFragment = OfferSplashFragment.newInstance();
         FragmentTransaction fragmentTransaction=fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, osFragment);

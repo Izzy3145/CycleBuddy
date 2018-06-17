@@ -1,7 +1,9 @@
 package com.example.android.cyclebuddy;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,9 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,12 +32,17 @@ public class ViewProfileActivity extends AppCompatActivity {
     @BindView(R.id.view_profile_image_view) ImageView profileImageView;
     @BindView(R.id.name_text_view) TextView nameTv;
     @BindView(R.id.buddy_type_text_view) TextView buddyTypeTv;
+    @BindView(R.id.years_cycling_text_view) TextView yearsCyclingTv;
+    @BindView(R.id.cycling_frequency_text_view) TextView cyclingFreqeuncyTv;
     @BindView(R.id.bio_text_view) TextView miniBioTv;
 
 
     //TODO: enable reading from database
     private FirebaseDatabase mFirebaseDatabase;
     private String mUserID;
+    private UserProfile mUserProfile;
+
+    private String mSharedPrefUserID;
 
     public static final String USER_ID = "user ID";
     public static final String USER_ID_TO_EDIT = "user ID to edit";
@@ -53,14 +62,27 @@ public class ViewProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mUserID = intent.getStringExtra(USER_ID);
 
+        //get userID from sharedpreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = sharedPreferences.getString("USER_ID","");
+
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference mRef = mFirebaseDatabase.getReference("Users").child("user");
+        final DatabaseReference mRef = mFirebaseDatabase.getReference("Users").child(mUserID);
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userValue = String.valueOf(dataSnapshot.getValue());
-                nameTv.setText(userValue);
+                mUserProfile = dataSnapshot.getValue(UserProfile.class);
+                //set data to views
+                if (mUserProfile != null) {
+                    nameTv.setText(mSharedPrefUserID);
+                    //nameTv.setText(mUserProfile.getUser());
+                    buddyTypeTv.setText(mUserProfile.getBuddyType());
+                    yearsCyclingTv.setText(mUserProfile.getYearsCycling());
+                    cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    miniBioTv.setText(mUserProfile.getMiniBio());
+                }
             }
 
             @Override

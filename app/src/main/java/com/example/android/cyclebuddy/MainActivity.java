@@ -1,6 +1,8 @@
 package com.example.android.cyclebuddy;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
@@ -104,11 +106,17 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
             }
         };
 
+        //save UserID in sharedPreferences for use across the app
         mFirebaseUser = mAuth.getCurrentUser();
         if(mFirebaseUser != null){
             userID = mFirebaseUser.getUid();
-            Timber.v(userID);
 
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("USER_ID", userID);
+            editor.apply();
+
+            Timber.v(userID);
         } else {
             Timber.v(userID);
         }

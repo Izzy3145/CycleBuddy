@@ -55,6 +55,40 @@
         android:padding="@dimen/medium_border"
         android:spinnerMode="dropdown" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium_border"
+        android:text="@string/how_long_cycling"
+        android:textSize="@dimen/large_text"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spinner_years_of_cycling"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:padding="@dimen/medium_border"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium_border"
+        android:text="@string/how_often_cycling"
+        android:textSize="@dimen/large_text"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spinner_cycling_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:padding="@dimen/medium_border"
+        android:spinnerMode="dropdown" />
+
+    <!--how many years experience do you have of cycling
+    how often do you cycle?
+     What kind of bike do you have?-->
+
     <EditText
         android:id="@+id/bio_edit_text"
         android:layout_width="match_parent"

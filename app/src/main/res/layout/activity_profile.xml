@@ -14,7 +14,7 @@
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,26 +26,18 @@
             android:id="@+id/view_profile_image_view"
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
-            android:padding="@dimen/medium_border"
             android:layout_marginLeft="@dimen/large_border"
+            android:padding="@dimen/medium_border"
             app:srcCompat="@drawable/ic_add_a_photo" />
 
         <TextView
             android:id="@+id/name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_border"/>
+            android:layout_marginLeft="@dimen/large_border" />
 
     </LinearLayout>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/medium_border"
-        android:text="@string/buddy_type"
-        android:textSize="@dimen/large_text"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/buddy_type_text_view"
@@ -54,9 +46,21 @@
         android:padding="@dimen/medium_border" />
 
     <TextView
+        android:id="@+id/years_cycling_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="@dimen/medium_border" />
+
+    <TextView
+        android:id="@+id/cycling_frequency_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="@dimen/medium_border" />
+
+    <TextView
         android:id="@+id/bio_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/large_border"/>
+        android:layout_marginLeft="@dimen/large_border" />
 
 </LinearLayout>

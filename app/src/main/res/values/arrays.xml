@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- These are the options displayed in the gender drop-down Spinner -->
     <string-array name="array_buddy_options">
         <item>@string/be_a_buddy</item>
         <item>@string/need_a_buddy</item>
         <item>@string/both</item>
+    </string-array>
+
+    <string-array name="array_years_of_cycling">
+        <item>@string/not_since_child</item>
+        <item>@string/zero_to_one</item>
+        <item>@string/one_to_three</item>
+        <item>@string/very_long</item>
+    </string-array>
+
+    <string-array name="array_cycling_frequency">
+        <item>@string/once_month</item>
+        <item>@string/once_week</item>
+        <item>@string/several_days</item>
+        <item>@string/everyday</item>
     </string-array>
 
 </resources>

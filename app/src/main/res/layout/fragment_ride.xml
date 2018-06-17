@@ -7,6 +7,13 @@
     tools:context=".ui.RideFragment"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_mikecyclebuddy2"
+        tools:layout_editor_absoluteX="64dp"
+        tools:layout_editor_absoluteY="320dp" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -15,18 +22,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:text="@string/home"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_mikecyclebuddy2"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="32dp" />
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/rf_search_button"

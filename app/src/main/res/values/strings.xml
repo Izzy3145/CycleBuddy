@@ -12,7 +12,7 @@
 
     <string name="home">Cycle Buddy</string>
     <string name="search">Search Fragment</string>
-    <string name="offer">Offer Fragment</string>
+    <string name="offer">Offer Ride!</string>
     <string name="messages">Messages Fragment</string>
     <string name="searchsplash">Search Splash Fragment</string>
     <string name="offersplash">Offer Splash Fragment</string>
@@ -25,12 +25,31 @@
     <string name="be_a_buddy">Be a buddy</string>
     <string name="need_a_buddy">Need a buddy</string>
     <string name="both">Both</string>
+    <string name="how_long_cycling">How long have you been cycling?</string>
+    <string name="not_since_child">Not since I was a child</string>
+    <string name="zero_to_one">0 to 1 years</string>
+    <string name="one_to_three">1 to 3 years</string>
+    <string name="very_long">My whole life</string>
+    <string name="how_often_cycling">How often do you cycle?</string>
+    <string name="once_month">Once a month</string>
+    <string name="once_week">Once a week</string>
+    <string name="several_days">Several days a week</string>
+    <string name="everyday">Everyday</string>
     <string name="none_selected">None selected</string>
     <string name="unsaved_changes_message">Leave without saving changes?</string>
     <string name="discard">Discard</string>
     <string name="continue_editing">Continue editing</string>
     <string name="image_save_failed">Image failed to save</string>
     <string name="task_not_complete">Task not complete</string>
+
+    <!-- offer fragments strings -->
+    <string name="be_a_buddy_exclamation">Be a buddy!</string>
+    <string name="offer_a_ride">Offer your company on a ride</string>
+    <string name="offer_from">Leaving from:</string>
+    <string name="offer_via">Going via:</string>
+    <string name="offer_to">Going to:</string>
+    <string name="offer_time_taken">Estimated time taken:</string>
+
 
 
 </resources>
