@@ -1,5 +1,6 @@
 package com.example.android.cyclebuddy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser mFirebaseUser;
 
-    public static final String USER_ID = "user ID";
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
 
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("USER_ID", userID);
+            editor.putString(getString(R.string.preference_file_key), userID);
             editor.apply();
 
             Timber.v(userID);
@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         switch (item.getItemId()){
             case R.id.view_own_profile:
                 Intent startProfileActivity = new Intent(this, ViewProfileActivity.class);
-                startProfileActivity.putExtra(USER_ID, userID);
                 startActivity(startProfileActivity);
                 //TODO: send an intent data so that the right version of view profile will open
                 return true;

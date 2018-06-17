@@ -20,4 +20,18 @@
         <item>@string/everyday</item>
     </string-array>
 
+    <!-- create list of all areas in London, and postcodes? -->
+    <string-array name="array_areas_of_london">
+        <item>Hackney</item>
+        <item>Farringdon</item>
+        <item>Moorgate</item>
+        <item>Archway</item>
+        <item>Morden</item>
+        <item>Greenwich</item>
+        <item>Hacnkey Marshes</item>
+        <item>Haggerston</item>
+        <item>Kings Cross</item>
+        <item>Euston</item>
+    </string-array>
+
 </resources>

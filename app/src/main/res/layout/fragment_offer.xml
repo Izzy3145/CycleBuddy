@@ -40,16 +40,16 @@
         android:text="@string/offer_from"
         android:textSize="@dimen/large_text" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/offer_from_edit_text"
         android:layout_width="wrap_content"
+        android:minWidth="100dp"
         android:layout_height="wrap_content"
+        android:hint="@string/example_from"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/medium_border"
-        android:hint="@string/offer_from"
-        android:textSize="@dimen/small_text" />
+        android:layout_marginTop="@dimen/medium_border" />
 
     <TextView
         android:id="@+id/offer_via_tv"
@@ -61,13 +61,16 @@
         android:text="@string/offer_via"
         android:textSize="@dimen/large_text" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/offer_via_edit_text"
         android:layout_width="wrap_content"
+        android:minWidth="100dp"
         android:layout_height="wrap_content"
+        android:hint="@string/example_via"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:hint="@string/offer_via"
+        android:layout_marginTop="@dimen/medium_border"
         android:textSize="@dimen/small_text" />
 
     <TextView
@@ -80,15 +83,16 @@
         android:text="@string/offer_to"
         android:textSize="@dimen/large_text" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/offer_to_edit_text"
         android:layout_width="wrap_content"
+        android:minWidth="100dp"
         android:layout_height="wrap_content"
+        android:hint="@string/example_to"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="8dp"
-        android:hint="@string/offer_to"
+        android:layout_marginTop="@dimen/medium_border"
         android:textSize="@dimen/small_text" />
 
     <TextView
@@ -101,15 +105,16 @@
         android:text="@string/offer_time_taken"
         android:textSize="@dimen/large_text" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/of_duration_edit_text"
         android:layout_width="wrap_content"
+        android:minWidth="100dp"
         android:layout_height="wrap_content"
+        android:hint="@string/example_duration"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="8dp"
-        android:hint="@string/offer_time_taken"
+        android:layout_marginTop="@dimen/medium_border"
         android:textSize="@dimen/small_text" />
 
     <Button

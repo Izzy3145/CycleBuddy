@@ -1,10 +1,13 @@
 package com.example.android.cyclebuddy;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -27,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.auth.data.model.User;
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,12 +41,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.Set;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,37 +56,33 @@ import timber.log.Timber;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    //TODO: add changes listener with "Discard" dialogue
-
     //TODO: either open with a Uri (editing existing profile), or no Uri (new profile)
-    //TODO: add setOnTouchListeners to all edit texts and buttons
-
 
     @BindView(R.id.edit_profile_toolbar) Toolbar editProfileToolbar;
     @BindView(R.id.profile_image_view) ImageView profileImageView;
     @BindView(R.id.spinner_buddy_type) Spinner buddyTypeSpinner;
     @BindView(R.id.spinner_years_of_cycling) Spinner yearsCyclingSpinner;
     @BindView(R.id.spinner_cycling_frequency) Spinner cyclingFrequencySpinner;
-
+    @BindView(R.id.upload_button) Button uploadButton;
     @BindView(R.id.save_button) Button saveButton;
     @BindView(R.id.name_edit_text) EditText nameEditText;
     @BindView(R.id.bio_edit_text) EditText bioEditText;
-
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mProfileDatabaseReference;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mStorageReference;
 
-    private String mUserID;
     private String mName;
     private String mBuddyType;
     private String mYearsCycling;
     private String mCyclingFrequency;
     private String mMiniBio;
     private String mPhotoUrl = null;
+    private String mSharedPrefUserID;
+    //TODO: send image random ID to shared preferences for ViewProfile to use
 
-    public static final String USER_ID_TO_EDIT = "user ID to edit";
+    private Uri selectedImageUri;
     private static final int PICK_IMAGE = 1;
 
     private boolean mProfileHasChanged = false;
@@ -93,7 +95,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,14 +106,17 @@ public class EditProfileActivity extends AppCompatActivity {
         if(ab != null){
             ab.setDisplayHomeAsUpEnabled(true);}
 
-        Intent intent = getIntent();
-        mUserID = intent.getStringExtra(USER_ID_TO_EDIT);
+        //get userID from sharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_file_key),
+                "unsuccessful");
 
         //set up writable database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
+        mStorageReference = mFirebaseStorage.getReference();
 
-        mProfileDatabaseReference = mFirebaseDatabase.getReference().child("Users").child(mUserID);
+        mProfileDatabaseReference = mFirebaseDatabase.getReference().child("Users").child(mSharedPrefUserID);
         //mStorageReference = mFirebaseStorage.getReference().child("profile_pics");
 
         //set up photo intent
@@ -120,7 +124,13 @@ public class EditProfileActivity extends AppCompatActivity {
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takePictureIntent();
+                choosePictureIntent();
+            }
+        });
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadImage();
             }
         });
 
@@ -136,14 +146,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 mMiniBio = bioEditText.getText().toString();
 
                 if(mPhotoUrl == null){
-                    newUser = new UserProfile(mUserID, mName, mBuddyType, mYearsCycling,
+                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
                             mCyclingFrequency, mMiniBio);
                 } else {
-                    newUser = new UserProfile(mUserID, mName, mBuddyType, mMiniBio, mYearsCycling,
+                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mMiniBio, mYearsCycling,
                             mCyclingFrequency, mPhotoUrl);
                 }
                 mProfileDatabaseReference.setValue(newUser);
-
                 finish();
             }
         });
@@ -178,10 +187,9 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void takePictureIntent() {
+    private void choosePictureIntent() {
 
         Intent intent;
-
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
         } else {
@@ -198,40 +206,9 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-            Uri selectedImageUri = data.getData();
+            selectedImageUri = data.getData();
 
-            try {
-                //save image to database
-                //final StorageReference photoRef = mStorageReference.child(selectedImageUri.getLastPathSegment());
-                //photoRef.putFile(selectedImageUri);
-                //TODO: sort out saving photo to Cloud Storage
-
-//                //  get the download Url
-//                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//                    @Override
-//                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                        if (!task.isSuccessful()) {
-//                            throw task.getException();
-//                        }
-//
-//                        // Continue with the task to get the download URL
-//                        return photoRef.getDownloadUrl();
-//                    }
-//                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Uri> task) {
-//                        if (task.isSuccessful()) {
-//                            Uri downloadUri = task.getResult();
-                //mPhotoUrl = downloadUri.toString();
-//
-//                        } else {
-//                            Toast.makeText(getApplicationContext(), getString(R.string.task_not_complete),
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
-                //set image to image view
+            try {//set image to image view
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 profileImageView.setImageBitmap(bitmap);
 
@@ -240,6 +217,42 @@ public class EditProfileActivity extends AppCompatActivity {
                 Timber.v("Problem with getting picture");
             }
         }
+    }
+
+    private void uploadImage(){
+
+        if(selectedImageUri != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            StorageReference ref = mStorageReference.child("images/"+ UUID.randomUUID().toString());
+            ref.putFile(selectedImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(EditProfileActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(EditProfileActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+
     }
 
     //set up buddy type spinner

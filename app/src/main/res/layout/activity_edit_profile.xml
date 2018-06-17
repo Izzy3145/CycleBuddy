@@ -14,7 +14,7 @@
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,19 +26,32 @@
             android:id="@+id/profile_image_view"
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
-            android:padding="@dimen/medium_border"
             android:layout_marginLeft="@dimen/large_border"
+            android:padding="@dimen/medium_border"
             app:srcCompat="@drawable/ic_add_a_photo" />
 
-        <EditText
-            android:id="@+id/name_edit_text"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/name"
-            android:layout_marginLeft="@dimen/large_border"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/upload_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="upload" />
+
+            <EditText
+                android:id="@+id/name_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/large_border"
+                android:hint="@string/name" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
     <TextView
         android:layout_width="wrap_content"
@@ -93,8 +106,8 @@
         android:id="@+id/bio_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/mini_bio"
-        android:layout_marginLeft="@dimen/large_border"/>
+        android:layout_marginLeft="@dimen/large_border"
+        android:hint="@string/mini_bio" />
 
     <Button
         android:id="@+id/save_button"
@@ -102,7 +115,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/save_button" />
-
 
 
 </LinearLayout>

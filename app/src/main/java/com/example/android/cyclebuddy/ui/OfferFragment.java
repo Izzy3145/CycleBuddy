@@ -12,13 +12,18 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,10 +40,12 @@ import butterknife.ButterKnife;
 public class OfferFragment extends Fragment implements View.OnClickListener{
 
     @BindView(R.id.of_offer_button) Button ofOfferButton;
-    @BindView(R.id.offer_from_edit_text) EditText ofFromEditText;
-    @BindView(R.id.offer_via_edit_text) EditText ofViaEditText;
-    @BindView(R.id.offer_to_edit_text) EditText ofToEditText;
-    @BindView(R.id.of_duration_edit_text) EditText ofDurationEditText;
+    @BindView(R.id.offer_from_edit_text) AutoCompleteTextView ofFromEditText;
+    @BindView(R.id.offer_via_edit_text) AutoCompleteTextView ofViaEditText;
+    @BindView(R.id.offer_to_edit_text) AutoCompleteTextView ofToEditText;
+    @BindView(R.id.of_duration_edit_text) AutoCompleteTextView ofDurationEditText;
+    @BindView(R.id.be_a_buddy) TextView ofBeABuddyTv;
+
 
 
     FragmentManager fm;
@@ -94,13 +101,11 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         //get a reference to the correct child in the database
         mOfferDatabaseReference = mFirebaseDatabase.getReference().child("Offered");
+
         //get userID from sharedpreferences
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mSharedPrefUserID = sharedPreferences.getString("USER_ID","");
-        if (mSharedPrefUserID.equals("") ){
-        } else {
-            ofFromEditText.setText(mSharedPrefUserID);
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_file_key),
+                "unsuccessful");
     }
 
     @Override
@@ -110,6 +115,15 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_offer, container, false);
         ButterKnife.bind(this, view);
         ofOfferButton.setOnClickListener(this);
+
+        String[] areasOfLondon = getResources().getStringArray(R.array.array_areas_of_london);
+        // Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, areasOfLondon);
+        ofFromEditText.setAdapter(adapter);
+        ofViaEditText.setAdapter(adapter);
+        ofToEditText.setAdapter(adapter);
+
         return view;
     }
 
@@ -122,7 +136,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         mDuration = Integer.parseInt(ofDurationEditText.getText().toString());
 
         OfferedRoute newOfferedRoute = new OfferedRoute(mFrom, mVia, mTo, mDuration);
-        mOfferDatabaseReference.push().setValue(newOfferedRoute);
+        mOfferDatabaseReference.child(mSharedPrefUserID).setValue(newOfferedRoute);
 
         //and then display the offer splash fragment
         Fragment osFragment = OfferSplashFragment.newInstance();

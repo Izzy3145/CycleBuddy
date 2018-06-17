@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">CycleBuddy</string>
 
+    <string name="preference_file_key">com.example.android.cyclebuddy.PREFERENCE_FILE_KEY</string>
+
+
     <!-- navigation titles -->
     <string name="title_ride">Ride</string>
     <string name="title_search">Search</string>
@@ -10,9 +13,9 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="sign_out">Sign Out</string>
 
-    <string name="home">Cycle Buddy</string>
-    <string name="search">Search Fragment</string>
-    <string name="offer">Offer Ride!</string>
+    <string name="cycle_buddy">Cycle Buddy</string>
+    <string name="search">Search For Rides</string>
+    <string name="offer">Offer A Ride</string>
     <string name="messages">Messages Fragment</string>
     <string name="searchsplash">Search Splash Fragment</string>
     <string name="offersplash">Offer Splash Fragment</string>
@@ -48,7 +51,12 @@
     <string name="offer_from">Leaving from:</string>
     <string name="offer_via">Going via:</string>
     <string name="offer_to">Going to:</string>
-    <string name="offer_time_taken">Estimated time taken:</string>
+    <string name="offer_time_taken">Estimated time taken (mins):</string>
+    <string name="example_from">e.g. Hackney or E8 4FB</string>
+    <string name="example_to">e.g. Farringdon or EC1M 6EJ</string>
+    <string name="example_via">e.g. Haggerston station</string>
+    <string name="example_duration">e.g. 20</string>
+
 
 
 
