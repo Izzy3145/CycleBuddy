@@ -7,16 +7,15 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.style.UpdateLayout;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,16 +27,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.model.UserProfile;
-import com.firebase.ui.auth.data.model.User;
-import com.google.android.gms.auth.api.signin.internal.Storage;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,8 +40,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.util.Set;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -58,21 +50,29 @@ public class EditProfileActivity extends AppCompatActivity {
 
     //TODO: either open with a Uri (editing existing profile), or no Uri (new profile)
 
-    @BindView(R.id.edit_profile_toolbar) Toolbar editProfileToolbar;
-    @BindView(R.id.profile_image_view) ImageView profileImageView;
-    @BindView(R.id.spinner_buddy_type) Spinner buddyTypeSpinner;
-    @BindView(R.id.spinner_years_of_cycling) Spinner yearsCyclingSpinner;
-    @BindView(R.id.spinner_cycling_frequency) Spinner cyclingFrequencySpinner;
-    @BindView(R.id.upload_button) Button uploadButton;
-    @BindView(R.id.save_button) Button saveButton;
-    @BindView(R.id.name_edit_text) EditText nameEditText;
-    @BindView(R.id.bio_edit_text) EditText bioEditText;
-
+    private static final int PICK_IMAGE = 1;
+    @BindView(R.id.edit_profile_toolbar)
+    Toolbar editProfileToolbar;
+    @BindView(R.id.profile_image_view)
+    ImageView profileImageView;
+    @BindView(R.id.spinner_buddy_type)
+    Spinner buddyTypeSpinner;
+    @BindView(R.id.spinner_years_of_cycling)
+    Spinner yearsCyclingSpinner;
+    @BindView(R.id.spinner_cycling_frequency)
+    Spinner cyclingFrequencySpinner;
+    @BindView(R.id.upload_button)
+    Button uploadButton;
+    @BindView(R.id.save_button)
+    Button saveButton;
+    @BindView(R.id.name_edit_text)
+    EditText nameEditText;
+    @BindView(R.id.bio_edit_text)
+    EditText bioEditText;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mProfileDatabaseReference;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mStorageReference;
-
     private String mName;
     private String mBuddyType;
     private String mYearsCycling;
@@ -81,10 +81,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private String mPhotoUrl = null;
     private String mSharedPrefUserID;
     //TODO: send image random ID to shared preferences for ViewProfile to use
-
+    private String mPictureUUID;
     private Uri selectedImageUri;
-    private static final int PICK_IMAGE = 1;
-
     private boolean mProfileHasChanged = false;
     //set up the on TouchListener method, to be used later in onCreate
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -103,21 +101,36 @@ public class EditProfileActivity extends AppCompatActivity {
         setSupportActionBar(editProfileToolbar);
 
         ActionBar ab = getSupportActionBar();
-        if(ab != null){
-            ab.setDisplayHomeAsUpEnabled(true);}
-
-        //get userID from sharedPreferences
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_file_key),
-                "unsuccessful");
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         //set up writable database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         mStorageReference = mFirebaseStorage.getReference();
 
+        //get the user ID and picture ID from shared preferences
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_user_ID),
+                "unsuccessful");
+        mPictureUUID = sharedPreferences.getString(getString(R.string.preference_user_ID),
+                "empty");
+
+        //get reference to this user's part of the database
         mProfileDatabaseReference = mFirebaseDatabase.getReference().child("Users").child(mSharedPrefUserID);
-        //mStorageReference = mFirebaseStorage.getReference().child("profile_pics");
+
+        //if there is already an image in storage, load it
+        if(!mPictureUUID.equals("empty")){
+            String imagePath = "images/"+ mPictureUUID;
+            StorageReference downloadRef = mStorageReference.child(imagePath);
+
+            // Load the image using Glide
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(downloadRef)
+                    .into(profileImageView);
+        }
 
         //set up photo intent
         profileImageView.setClickable(true);
@@ -131,6 +144,10 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 uploadImage();
+                //put new photo UUID in the shared preferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(getString(R.string.preference_photo_UUID), mPictureUUID);
+                editor.apply();
             }
         });
 
@@ -144,8 +161,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 UserProfile newUser;
                 mName = nameEditText.getText().toString();
                 mMiniBio = bioEditText.getText().toString();
-
-                if(mPhotoUrl == null){
+                //TODO: remove photoUrl
+                if (mPhotoUrl == null) {
                     newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
                             mCyclingFrequency, mMiniBio);
                 } else {
@@ -168,7 +185,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 // If some fields have changed, setup a dialog to warn the user.
                 DialogInterface.OnClickListener discardButtonClickListener =
@@ -179,7 +196,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 finish();
                             }
                         };
-
                 // Show dialog that there are unsaved changes
                 showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
@@ -188,7 +204,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void choosePictureIntent() {
-
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -219,15 +234,16 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
 
-        if(selectedImageUri != null)
-        {
+        if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = mStorageReference.child("images/"+ UUID.randomUUID().toString());
+            mPictureUUID = UUID.randomUUID().toString();
+
+            StorageReference ref = mStorageReference.child("images/" + mPictureUUID);
             ref.putFile(selectedImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -240,15 +256,15 @@ public class EditProfileActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(EditProfileActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
         }

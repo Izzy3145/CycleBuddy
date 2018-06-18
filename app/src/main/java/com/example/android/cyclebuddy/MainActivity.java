@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(getString(R.string.preference_file_key), userID);
+            editor.putString(getString(R.string.preference_user_ID), userID);
             editor.apply();
 
             Timber.v(userID);

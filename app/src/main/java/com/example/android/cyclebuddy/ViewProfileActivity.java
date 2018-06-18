@@ -46,8 +46,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
+    private StorageReference mStorageReference;
     private UserProfile mUserProfile;
     private String mSharedPrefUserID;
+    private String mPictureUUID;
+    private SharedPreferences mSharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,23 +65,19 @@ public class ViewProfileActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        //get userID from sharedpreferences
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_file_key),
+        //get userID and photo UUID from shared preferences
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
                 "unsuccessful");
+
         //get reference to user's section of database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference mRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
 
-        //download the saved image
         mFirebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageRef = mFirebaseStorage.getReference();
-        StorageReference downloadRef = storageRef.child("images/36246e9b-4d84-4fe1-87d5-6780c5b35034");
-        // Load the image using Glide
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(downloadRef)
-                .into(profileImageView);
+        mStorageReference = mFirebaseStorage.getReference();
+
+        downloadImage();
 
         //download all other values
         mRef.addValueEventListener(new ValueEventListener() {
@@ -91,6 +91,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     yearsCyclingTv.setText(mUserProfile.getYearsCycling());
                     cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
                     miniBioTv.setText(mUserProfile.getMiniBio());
+                    downloadImage();
                 }
             }
             @Override
@@ -120,5 +121,24 @@ public class ViewProfileActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void downloadImage(){
+        //download the saved image
+        mPictureUUID = mSharedPreferences.getString(getString(R.string.preference_photo_UUID),
+                "null");
+        String imagePath = "images/"+ mPictureUUID;
+        StorageReference downloadRef = mStorageReference.child(imagePath);
+
+        // Load the image using Glide
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(downloadRef)
+                .into(profileImageView);
     }
 }

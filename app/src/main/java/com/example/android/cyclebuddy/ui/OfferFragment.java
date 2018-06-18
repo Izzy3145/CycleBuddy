@@ -104,7 +104,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
 
         //get userID from sharedpreferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_file_key),
+        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_user_ID),
                 "unsuccessful");
     }
 
