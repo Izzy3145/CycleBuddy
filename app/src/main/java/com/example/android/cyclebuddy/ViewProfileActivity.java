@@ -63,6 +63,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
+
+            //TODO: when opened from Search Splash, back button should lead back to the search list fragment
         }
 
         //get userID and photo UUID from shared preferences

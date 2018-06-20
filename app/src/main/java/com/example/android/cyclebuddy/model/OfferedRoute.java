@@ -6,20 +6,23 @@ public class OfferedRoute {
     private String via;
     private String to;
     private int duration;
+    private String userID;
 
     public OfferedRoute(){}
 
-    public OfferedRoute(String from, String to, int duration){
+    public OfferedRoute(String from, String to, int duration, String userID){
         this.from = from;
         this.to = to;
         this.duration = duration;
+        this.userID = userID;
     }
 
-    public OfferedRoute(String from, String via, String to, int duration){
+    public OfferedRoute(String from, String via, String to, int duration, String userID){
         this.from = from;
         this.via = via;
         this.to = to;
         this.duration = duration;
+        this.userID = userID;
     }
 
     public String getFrom(){
@@ -36,6 +39,8 @@ public class OfferedRoute {
 
     public int getDuration(){return duration;}
 
+    public String getUserID(){return userID;}
+
     public void setFrom(String from){
         this.from = from;
     }
@@ -49,4 +54,9 @@ public class OfferedRoute {
     }
 
     public void setDuration(int duration){this.duration = duration;}
+
+    public void setUserID(String userID){
+        this.userID = userID;
+    }
+
 }

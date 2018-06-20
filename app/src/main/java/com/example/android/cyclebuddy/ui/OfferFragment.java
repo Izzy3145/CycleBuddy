@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.android.cyclebuddy.R;
+import com.example.android.cyclebuddy.helpers.AreasOfLondon;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,8 +46,6 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
     @BindView(R.id.offer_to_edit_text) AutoCompleteTextView ofToEditText;
     @BindView(R.id.of_duration_edit_text) AutoCompleteTextView ofDurationEditText;
     @BindView(R.id.be_a_buddy) TextView ofBeABuddyTv;
-
-
 
     FragmentManager fm;
     private FirebaseDatabase mFirebaseDatabase;
@@ -116,7 +115,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         ButterKnife.bind(this, view);
         ofOfferButton.setOnClickListener(this);
 
-        String[] areasOfLondon = getResources().getStringArray(R.array.array_areas_of_london);
+        String[] areasOfLondon = AreasOfLondon.areasAndPostcodes;
         // Create the adapter and set it to the AutoCompleteTextView
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, areasOfLondon);
@@ -135,8 +134,8 @@ public class OfferFragment extends Fragment implements View.OnClickListener{
         mTo = ofToEditText.getText().toString();
         mDuration = Integer.parseInt(ofDurationEditText.getText().toString());
 
-        OfferedRoute newOfferedRoute = new OfferedRoute(mFrom, mVia, mTo, mDuration);
-        mOfferDatabaseReference.child(mSharedPrefUserID).setValue(newOfferedRoute);
+        OfferedRoute newOfferedRoute = new OfferedRoute(mFrom, mVia, mTo, mDuration, mSharedPrefUserID);
+        mOfferDatabaseReference.push().setValue(newOfferedRoute);
 
         //and then display the offer splash fragment
         Fragment osFragment = OfferSplashFragment.newInstance();
