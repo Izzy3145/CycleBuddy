@@ -1,26 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.SearchFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/need_a_buddy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="8dp"
-        android:text="@string/search"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/sf_search_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/need_a_buddy"
+        android:textSize="@dimen/title_text"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/search_from_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/medium_border"
+        android:text="@string/offer_from"
+        android:textSize="@dimen/large_text" />
+
+    <AutoCompleteTextView
+        android:id="@+id/search_from_edit_text"
+        android:layout_width="wrap_content"
+        android:minWidth="100dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/example_from"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/medium_border" />
+
+    <TextView
+        android:id="@+id/search_to_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/medium_border"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/large_border"
+        android:text="@string/offer_to"
+        android:textSize="@dimen/large_text" />
+
+    <AutoCompleteTextView
+        android:id="@+id/search_to_edit_text"
+        android:layout_width="wrap_content"
+        android:minWidth="100dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/example_via"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/medium_border"
+        android:textSize="@dimen/small_text" />
 
     <Button
         android:id="@+id/sf_search_button"
@@ -36,4 +77,4 @@
 
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

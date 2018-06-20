@@ -8,17 +8,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.android.cyclebuddy.R;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
 
-    private String[] mDataset;
+    private ArrayList<String> mDataset;
     private Context mContext;
     private SearchResultsAdapterListener mClickHandler;
 
     //constructor
-    public SearchResultsAdapter(Context context, String[] dataSet, SearchResultsAdapterListener listener){
+    public SearchResultsAdapter(Context context, ArrayList<String> dataSet, SearchResultsAdapterListener listener){
         mContext = context;
         mDataset = dataSet;
         mClickHandler = listener;
@@ -36,13 +39,13 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        String currentRoute = mDataset[position];
+        String currentRoute = mDataset.get(position);
         holder.searchResultsTv.setText(currentRoute);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
 //    public void setStepsForNextView(List<Step> selectedSteps){
@@ -52,7 +55,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     //create interface that requires onClick Method to be implemented
     public interface SearchResultsAdapterListener {
-        void onClickMethod(String[] dataset, int position);
+        void onClickMethod(ArrayList<String> dataset, int position);
     }
 
     //create custom viewholder

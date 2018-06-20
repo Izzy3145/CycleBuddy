@@ -2,6 +2,8 @@ package com.example.android.cyclebuddy.helpers;
 
 public class AreasOfLondon {
 
+    //TODO: make postcodes relate to areas, so that both results come from search results
+
     public static String[] areasAndPostcodes = {"Abbey Wood","Acton","Addington","Addiscombe","Albany Park",
             "Aldborough Hatch","Aldgate","Aldwych","Alperton","Anerley","Angel","Aperfield","Archway",
             "Ardleigh Green","Arkley","Arnos Grove","Balham","Bankside","Barbican","Barking","Barkingside",

@@ -11,8 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.app.Fragment;
+import android.widget.TextView;
+
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.helpers.SearchResultsAdapter;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,12 +34,13 @@ public class SearchListFragment extends Fragment implements
 
    // private OnFragmentInteractionListener mListener;
    @BindView(R.id.results_recycler_view) RecyclerView mRecyclerView;
+   @BindView(R.id.rv_empty_view) TextView mEmptyView;
    private FragmentManager fm;
    private RecyclerView.LayoutManager mLayoutManager;
    private SearchResultsAdapter mAdapter;
 
     private static final String DATASET_1 = "dataSet1";
-    private String[] arrayListForRv;
+    private ArrayList<String> arrayListForRv;
 
     public SearchListFragment() {
         // Required empty public constructor
@@ -46,10 +52,10 @@ public class SearchListFragment extends Fragment implements
     }
 
 
-    public static SearchListFragment newInstance(String[] dataset) {
+    public static SearchListFragment newInstance(ArrayList<String> dataset) {
         SearchListFragment fragment = new SearchListFragment();
         Bundle args = new Bundle();
-        args.putStringArray(DATASET_1, dataset);
+        args.putStringArrayList(DATASET_1, dataset);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +65,7 @@ public class SearchListFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         fm = getActivity().getFragmentManager();
         if (getArguments() != null) {
-            arrayListForRv = getArguments().getStringArray(DATASET_1);
+            arrayListForRv = getArguments().getStringArrayList(DATASET_1);
         }
     }
 
@@ -70,23 +76,29 @@ public class SearchListFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_search_list, container, false);
         ButterKnife.bind(this,view);
 
-        //set up recyclerview
+        //set up recyclerView
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //set dataset to adapter
-        mAdapter = new SearchResultsAdapter(getContext(), arrayListForRv, this);
-        //mAdapter.setStepsForNextView(mSteps);
-        //set adapter to recycler view
-        mRecyclerView.setAdapter(mAdapter);
+        if(arrayListForRv.size() == 0){
+            mEmptyView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            //set dataset to adapter
+            mAdapter = new SearchResultsAdapter(getContext(), arrayListForRv, this);
+            //mAdapter.setStepsForNextView(mSteps);
+            //set adapter to recycler view
+            mRecyclerView.setAdapter(mAdapter);
+        }
         return view;
 
     }
 
     @Override
-    public void onClickMethod(String[] dataset, int position) {
+    public void onClickMethod(ArrayList<String> dataset, int position) {
         android.app.Fragment ssFragment = SearchSplashFragment.newInstance();
         FragmentTransaction fragmentTransaction=fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, ssFragment);
