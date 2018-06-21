@@ -15,8 +15,10 @@ import android.widget.TextView;
 
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.helpers.SearchResultsAdapter;
+import com.example.android.cyclebuddy.model.OfferedRoute;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +42,7 @@ public class SearchListFragment extends Fragment implements
    private SearchResultsAdapter mAdapter;
 
     private static final String DATASET_1 = "dataSet1";
-    private ArrayList<String> arrayListForRv;
+    private ArrayList<OfferedRoute> foundRoutesList;
 
     public SearchListFragment() {
         // Required empty public constructor
@@ -51,11 +53,10 @@ public class SearchListFragment extends Fragment implements
         return fragment;
     }
 
-
-    public static SearchListFragment newInstance(ArrayList<String> dataset) {
+    public static SearchListFragment newInstance(ArrayList<OfferedRoute> foundRoutes) {
         SearchListFragment fragment = new SearchListFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(DATASET_1, dataset);
+        args.putParcelableArrayList(DATASET_1, foundRoutes);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,7 +66,7 @@ public class SearchListFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         fm = getActivity().getFragmentManager();
         if (getArguments() != null) {
-            arrayListForRv = getArguments().getStringArrayList(DATASET_1);
+            foundRoutesList = getArguments().getParcelableArrayList(DATASET_1);
         }
     }
 
@@ -82,13 +83,13 @@ public class SearchListFragment extends Fragment implements
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if(arrayListForRv.size() == 0){
+        if(foundRoutesList == null || foundRoutesList.size() == 0){
             mEmptyView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
             mEmptyView.setVisibility(View.GONE);
             //set dataset to adapter
-            mAdapter = new SearchResultsAdapter(getContext(), arrayListForRv, this);
+            mAdapter = new SearchResultsAdapter(getContext(), foundRoutesList, this);
             //mAdapter.setStepsForNextView(mSteps);
             //set adapter to recycler view
             mRecyclerView.setAdapter(mAdapter);
@@ -98,7 +99,7 @@ public class SearchListFragment extends Fragment implements
     }
 
     @Override
-    public void onClickMethod(ArrayList<String> dataset, int position) {
+    public void onClickMethod(ArrayList<OfferedRoute> dataset, int position) {
         android.app.Fragment ssFragment = SearchSplashFragment.newInstance();
         FragmentTransaction fragmentTransaction=fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, ssFragment);

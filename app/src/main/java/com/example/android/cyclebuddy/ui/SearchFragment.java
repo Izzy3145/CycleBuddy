@@ -51,8 +51,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private DatabaseReference mOfferDatabaseReference;
     private String searchFrom;
     private String searchTo;
-    private OfferedRoute foundOfferedRoute;
-    private ArrayList<String> mDataset = new ArrayList<>();
+    private ArrayList<OfferedRoute> foundRoutesList;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -97,22 +96,29 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         searchFrom = sfFromEditText.getText().toString();
         searchTo = sfToEditText.getText().toString();
 
+        //TODO: add from and to "Anywhere" options
+        //TODO: 'via' to 'to' inclusive
         //search the database for the searched route
         mOfferDatabaseReference.child("Offered").orderByChild("from").equalTo(searchFrom)
                 .addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                List<OfferedRoute> routesList = new ArrayList<OfferedRoute>();
+                                foundRoutesList = new ArrayList<OfferedRoute>();
                                 for (DataSnapshot routesSnapshot : dataSnapshot.getChildren()) {
                                     OfferedRoute foundRoute = routesSnapshot.getValue(OfferedRoute.class);
                                     if (foundRoute != null) {
                                         if (foundRoute.getTo().equals(searchTo) || foundRoute.getVia().equals(searchTo)) {
-                                            routesList.add(foundRoute);
+                                            foundRoutesList.add(foundRoute);
                                         }
                                     }
-                                    Log.d(TAG, "no of records of the search is " + routesList.size());
+                                    Log.d(TAG, "no of records of the search is " + foundRoutesList.size());
                                 }
+                                android.app.Fragment slFragment = SearchListFragment.newInstance(foundRoutesList);
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.replace(R.id.fragment_container, slFragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
                             }
 
                             @Override
@@ -122,10 +128,5 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         });
 
 
-        android.app.Fragment slFragment = SearchListFragment.newInstance(mDataset);
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, slFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

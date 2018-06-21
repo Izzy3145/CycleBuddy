@@ -1,6 +1,11 @@
 package com.example.android.cyclebuddy.model;
 
-public class OfferedRoute {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class OfferedRoute implements Parcelable{
+
+    //TODO: make duration nullable
 
     private String from;
     private String via;
@@ -59,4 +64,37 @@ public class OfferedRoute {
         this.userID = userID;
     }
 
+    //parcellable methods
+    public static final Creator CREATOR = new Creator() {
+        @Override
+        public OfferedRoute createFromParcel(Parcel parcel) {
+            return new OfferedRoute(parcel);
+        }
+
+        @Override
+        public OfferedRoute[] newArray(int i) {
+            return new OfferedRoute[i];
+        }
+    };
+    //override Parcelable methods
+    private OfferedRoute(Parcel in) {
+        from = in.readString();
+        to = in.readString();
+        duration = in.readInt();
+        userID = in.readString();
+        //TODO: add in write in "via"
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(from);
+        parcel.writeString(to);
+        parcel.writeInt(duration);
+        parcel.writeString(userID);
+    }
 }

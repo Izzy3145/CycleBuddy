@@ -7,7 +7,25 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/search_result_tv"
+        android:id="@+id/result_from"
+        android:textSize="@dimen/large_text"
+        android:padding="@dimen/medium_border" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_to"
+        android:textSize="@dimen/large_text"
+        android:padding="@dimen/medium_border" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_duration"
+        android:textSize="@dimen/large_text"
+        android:padding="@dimen/medium_border" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_userID"
         android:textSize="@dimen/large_text"
         android:padding="@dimen/medium_border" />
 

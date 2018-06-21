@@ -1,8 +1,8 @@
 package com.example.android.cyclebuddy.model;
 
-import com.firebase.ui.auth.data.model.User;
-
 public class UserProfile {
+
+    //TODO: set up username for viewing in search list
 
     private String userID;
     private String user;
