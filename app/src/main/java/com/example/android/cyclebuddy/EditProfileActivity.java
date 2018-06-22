@@ -114,7 +114,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_user_ID),
                 "unsuccessful");
-        mPictureUUID = sharedPreferences.getString(getString(R.string.preference_user_ID),
+        mPictureUUID = sharedPreferences.getString(getString(R.string.preference_photo_UUID),
                 "empty");
 
         //get reference to this user's part of the database
@@ -243,7 +243,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             mPictureUUID = UUID.randomUUID().toString();
 
-            StorageReference ref = mStorageReference.child("images/" + mPictureUUID);
+            StorageReference ref = mStorageReference.child("images/"+ mPictureUUID);
             ref.putFile(selectedImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

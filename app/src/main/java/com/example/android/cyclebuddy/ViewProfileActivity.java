@@ -93,7 +93,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                     yearsCyclingTv.setText(mUserProfile.getYearsCycling());
                     cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
                     miniBioTv.setText(mUserProfile.getMiniBio());
-                    downloadImage();
                 }
             }
             @Override
@@ -128,6 +127,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        downloadImage();
     }
 
     private void downloadImage(){
