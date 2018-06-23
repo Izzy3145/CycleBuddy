@@ -1,26 +1,36 @@
 package com.example.android.cyclebuddy;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.android.cyclebuddy.helpers.ContextPasser;
+import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
+import com.example.android.cyclebuddy.ui.MessagesFragment;
+import com.example.android.cyclebuddy.ui.SearchListFragment;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,10 +39,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
@@ -43,20 +52,26 @@ public class ViewProfileActivity extends AppCompatActivity {
     @BindView(R.id.years_cycling_text_view) TextView yearsCyclingTv;
     @BindView(R.id.cycling_frequency_text_view) TextView cyclingFreqeuncyTv;
     @BindView(R.id.bio_text_view) TextView miniBioTv;
+    @BindView(R.id.message_button) Button messageButton;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
+    private DatabaseReference mRef;
     private StorageReference mStorageReference;
     private UserProfile mUserProfile;
     private String mSharedPrefUserID;
     private String mPictureUUID;
     private SharedPreferences mSharedPreferences;
 
+    private OfferedRoute mSelectedRoute;
+    private static final String PASSED_BUNDLE = "passed bundle";
+    private static final String SELECTED_ROUTE = "selectedRoute";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setTitle(Html.fromHtml("<font color='#FFFFFF'> View Profile </font>"));
+        setContentView(R.layout.activity_view_profile);
         ButterKnife.bind(this);
 
         setSupportActionBar(profileToolbar);
@@ -69,17 +84,23 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         //get userID and photo UUID from shared preferences
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
-                "unsuccessful");
+
+        Bundle routeBundle = getIntent().getBundleExtra(PASSED_BUNDLE);
+        if(routeBundle != null) {
+            mSelectedRoute = routeBundle.getParcelable(SELECTED_ROUTE);
+            mSharedPrefUserID = mSelectedRoute.getUserID();
+            enableMessageButton();
+            } else {
+            mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
+                    "unsuccessful");
+        }
 
         //get reference to user's section of database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference mRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
+        mRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
 
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference();
-
-        downloadImage();
+        mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
 
         //download all other values
         mRef.addValueEventListener(new ValueEventListener() {
@@ -93,6 +114,13 @@ public class ViewProfileActivity extends AppCompatActivity {
                     yearsCyclingTv.setText(mUserProfile.getYearsCycling());
                     cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
                     miniBioTv.setText(mUserProfile.getMiniBio());
+                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+                        // Load the image using Glide
+                        Timber.v("No photo saved yet");
+                     } else {
+                        mPictureUUID = mUserProfile.getPhotoUrl();
+                        downloadImage(mPictureUUID);
+                    }
                 }
             }
             @Override
@@ -117,7 +145,15 @@ public class ViewProfileActivity extends AppCompatActivity {
                 startActivity(startEditProfile);
                 return true;
             case R.id.sign_out:
-                AuthUI.getInstance().signOut(this);
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(ViewProfileActivity.this, MainActivity.class));
+                                finish();
+                        }
+                     });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -127,20 +163,51 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        downloadImage();
+        //TODO: for signing in and out, two different users
+        //get userID and photo UUID from shared preferences
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
+                "unsuccessful");
+
+        //download all other values
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUserProfile = dataSnapshot.getValue(UserProfile.class);
+                //set data to views
+                if (mUserProfile != null) {
+                    nameTv.setText(mUserProfile.getUser());
+                    buddyTypeTv.setText(mUserProfile.getBuddyType());
+                    yearsCyclingTv.setText(mUserProfile.getYearsCycling());
+                    cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    miniBioTv.setText(mUserProfile.getMiniBio());
+                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+                        Timber.v("No photo saved yet");
+                    } else {
+                        mPictureUUID = mUserProfile.getPhotoUrl();
+                        downloadImage(mPictureUUID);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void downloadImage(){
+    private void downloadImage(String pictureUUID){
         //download the saved image
-        mPictureUUID = mSharedPreferences.getString(getString(R.string.preference_photo_UUID),
-                "null");
-        String imagePath = "images/"+ mPictureUUID;
-        StorageReference downloadRef = mStorageReference.child(imagePath);
+        StorageReference downloadRef = mStorageReference.child(pictureUUID);
 
         // Load the image using Glide
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(downloadRef)
+                .placeholder(R.drawable.ic_add_a_photo)
                 .into(profileImageView);
+    }
+
+    public void enableMessageButton(){
+        messageButton.setVisibility(View.VISIBLE);
     }
 }

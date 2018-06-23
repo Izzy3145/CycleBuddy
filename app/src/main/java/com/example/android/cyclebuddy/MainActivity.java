@@ -12,6 +12,7 @@ import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,11 +51,10 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
 
-    //TODO: set up sharedPreferences to pass userID around
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(Html.fromHtml("<font color='#FFFFFF'> Cycle Buddy </font>"));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mainToolbar);
@@ -105,22 +105,10 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 }
             }
         };
-
-        //save UserID in sharedPreferences for use across the app
-        mFirebaseUser = mAuth.getCurrentUser();
-        if(mFirebaseUser != null){
-            userID = mFirebaseUser.getUid();
-
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(getString(R.string.preference_user_ID), userID);
-            editor.apply();
-
-            Timber.v(userID);
-        } else {
-            Timber.v(userID);
-        }
+        userIDtoSharedPreferences();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,7 +140,24 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     @Override
     protected void onResume() {
         super.onResume();
+        userIDtoSharedPreferences();
         mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    public void userIDtoSharedPreferences(){
+        //save UserID in sharedPreferences for use across the app
+        mFirebaseUser = mAuth.getCurrentUser();
+        if(mFirebaseUser != null){
+            userID = mFirebaseUser.getUid();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.preference_user_ID), userID);
+            editor.apply();
+
+            Timber.v(userID);
+        } else {
+            Timber.v(userID);
+        }
     }
 
     //set up BottomNavigation listener to inflate the necessary fragment

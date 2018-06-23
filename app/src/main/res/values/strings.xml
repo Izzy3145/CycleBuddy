@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">CycleBuddy</string>
 
+    <!-- activity headings -->
+    <string name="cycle_buddy">Cycle Buddy</string>
+    <string name="search_rides">Search Rides</string>
+    <string name="offer_rides">Offer A Ride</string>
+    <string name="messages">Messages</string>
+    <string name="view_profile">View Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+
+    <!-- shared preference strings -->
     <string name="preference_user_ID">preference User ID</string>
     <string name="preference_photo_UUID">photo UUID</string>
 
@@ -10,19 +19,17 @@
     <string name="title_offer">Offer</string>
     <string name="title_messages">Messages</string>
     <string name="profile">Profile</string>
-    <string name="edit_profile">Edit Profile</string>
     <string name="sign_out">Sign Out</string>
 
-    <string name="cycle_buddy">Cycle Buddy</string>
     <string name="search">Search For Rides</string>
     <string name="offer">Offer A Ride</string>
-    <string name="messages">Messages Fragment</string>
     <string name="searchsplash">Good luck on your journey!</string>
     <string name="offersplash">Thanks for offering to be a buddy!</string>
 
     <!-- profile strings -->
     <string name="name">User name</string>
     <string name="save_button">Save</string>
+    <string name="message_button">Send Message</string>
     <string name="mini_bio">Mini bio</string>
     <string name="buddy_type">Are you a buddy, or in need of a buddy?</string>
     <string name="be_a_buddy">Be a buddy</string>

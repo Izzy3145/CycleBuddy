@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
+
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".EditProfileActivity">
 
@@ -27,8 +34,8 @@
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:layout_marginLeft="@dimen/large_border"
-            android:padding="@dimen/medium_border"
-            app:srcCompat="@drawable/ic_add_a_photo" />
+            android:src="@drawable/ic_add_a_photo"
+            android:padding="@dimen/medium_border" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -116,5 +123,5 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/save_button" />
 
-
 </LinearLayout>
+</ScrollView>

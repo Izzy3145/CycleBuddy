@@ -27,8 +27,8 @@
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:layout_marginLeft="@dimen/large_border"
-            android:padding="@dimen/medium_border"
-            app:srcCompat="@drawable/ic_add_a_photo" />
+            android:src="@drawable/ic_add_a_photo"
+            android:padding="@dimen/medium_border"/>
 
         <TextView
             android:id="@+id/name_text_view"
@@ -62,5 +62,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/large_border" />
+
+    <Button
+        android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/message_button"
+        android:visibility="gone"/>
 
 </LinearLayout>

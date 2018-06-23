@@ -6,5 +6,8 @@
     <color name="light_green">#10FC8A</color>
     <color name="dark_green">#8002AB5A</color>
     <color name="black">#000000</color>
+    <color name="dark_grey">#CBCBCB</color>
+    <color name="white">#FFFFFF</color>
+
 
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,8 @@ public class SearchListFragment extends Fragment implements
    private SearchResultsAdapter mAdapter;
 
     private static final String DATASET_1 = "dataSet1";
+    private static final String SELECTED_ROUTE = "selectedRoute";
+
     private ArrayList<OfferedRoute> foundRoutesList;
 
     public SearchListFragment() {
@@ -73,6 +76,8 @@ public class SearchListFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Find a Buddy </font>"));
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search_list, container, false);
         ButterKnife.bind(this,view);
@@ -100,8 +105,14 @@ public class SearchListFragment extends Fragment implements
 
     @Override
     public void onClickMethod(ArrayList<OfferedRoute> dataset, int position) {
+        OfferedRoute selectedRoute = dataset.get(position);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SELECTED_ROUTE, selectedRoute);
+
         android.app.Fragment ssFragment = SearchSplashFragment.newInstance();
         FragmentTransaction fragmentTransaction=fm.beginTransaction();
+        ssFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fragment_container, ssFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

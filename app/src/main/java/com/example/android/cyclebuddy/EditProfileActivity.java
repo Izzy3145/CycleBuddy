@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -32,8 +33,11 @@ import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -80,9 +84,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private String mMiniBio;
     private String mPhotoUrl = null;
     private String mSharedPrefUserID;
-    //TODO: send image random ID to shared preferences for ViewProfile to use
     private String mPictureUUID;
     private Uri selectedImageUri;
+    private UserProfile mUserProfile;
+    private SharedPreferences mSharedPreferences;
     private boolean mProfileHasChanged = false;
     //set up the on TouchListener method, to be used later in onCreate
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -96,6 +101,7 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(Html.fromHtml("<font color='#FFFFFF'> Edit Profile </font>"));
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
         setSupportActionBar(editProfileToolbar);
@@ -108,29 +114,41 @@ public class EditProfileActivity extends AppCompatActivity {
         //set up writable database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference();
 
         //get the user ID and picture ID from shared preferences
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPrefUserID = sharedPreferences.getString(getString(R.string.preference_user_ID),
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
                 "unsuccessful");
-        mPictureUUID = sharedPreferences.getString(getString(R.string.preference_photo_UUID),
-                "empty");
 
         //get reference to this user's part of the database
         mProfileDatabaseReference = mFirebaseDatabase.getReference().child("Users").child(mSharedPrefUserID);
+        mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
 
-        //if there is already an image in storage, load it
-        if(!mPictureUUID.equals("empty")){
-            String imagePath = "images/"+ mPictureUUID;
-            StorageReference downloadRef = mStorageReference.child(imagePath);
+        //download existing values
+        mProfileDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUserProfile = dataSnapshot.getValue(UserProfile.class);
+                //set data to views
+                if (mUserProfile != null) {
+                    nameEditText.setText(mUserProfile.getUser());
+                    //buddyTypeTv.setText(mUserProfile.getBuddyType());
+                    //yearsCyclingTv.setText(mUserProfile.getYearsCycling());
+                    //cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    bioEditText.setText(mUserProfile.getMiniBio());
+                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+                        Timber.v("No photo saved yet");
+                    } else {
+                        mPictureUUID = mUserProfile.getPhotoUrl();
+                        downloadImage(mPictureUUID);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            // Load the image using Glide
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
-                    .load(downloadRef)
-                    .into(profileImageView);
-        }
+            }
+        });
 
         //set up photo intent
         profileImageView.setClickable(true);
@@ -144,10 +162,6 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 uploadImage();
-                //put new photo UUID in the shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(getString(R.string.preference_photo_UUID), mPictureUUID);
-                editor.apply();
             }
         });
 
@@ -162,12 +176,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 mName = nameEditText.getText().toString();
                 mMiniBio = bioEditText.getText().toString();
                 //TODO: remove photoUrl
-                if (mPhotoUrl == null) {
+                if (mPictureUUID == null || mPictureUUID.isEmpty()) {
                     newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
                             mCyclingFrequency, mMiniBio);
                 } else {
                     newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mMiniBio, mYearsCycling,
-                            mCyclingFrequency, mPhotoUrl);
+                            mCyclingFrequency, mPictureUUID);
                 }
                 mProfileDatabaseReference.setValue(newUser);
                 finish();
@@ -180,6 +194,16 @@ public class EditProfileActivity extends AppCompatActivity {
         buddyTypeSpinner.setOnTouchListener(mTouchListener);
         yearsCyclingSpinner.setOnTouchListener(mTouchListener);
         cyclingFrequencySpinner.setOnTouchListener(mTouchListener);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //TODO: could remove?
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
+                "unsuccessful");
 
     }
 
@@ -235,7 +259,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-
         if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
@@ -243,7 +266,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
             mPictureUUID = UUID.randomUUID().toString();
 
-            StorageReference ref = mStorageReference.child("images/"+ mPictureUUID);
+            StorageReference ref = mStorageReference.child(mPictureUUID);
+            //TODO: delete previous photos
             ref.putFile(selectedImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -269,6 +293,18 @@ public class EditProfileActivity extends AppCompatActivity {
                     });
         }
 
+    }
+
+    private void downloadImage(String pictureUUID){
+        //download the saved image
+        StorageReference downloadRef = mStorageReference.child(pictureUUID);
+
+        // Load the image using Glide
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(downloadRef)
+                .placeholder(R.drawable.ic_add_a_photo)
+                .into(profileImageView);
     }
 
     //set up buddy type spinner

@@ -1,5 +1,7 @@
 package com.example.android.cyclebuddy.model;
 
+import android.support.annotation.Nullable;
+
 public class UserProfile {
 
     //TODO: set up username for viewing in search list
@@ -10,7 +12,7 @@ public class UserProfile {
     private String yearsCycling;
     private String cyclingFrequency;
     private String miniBio;
-    private String photoUrl;
+    @Nullable private String photoUrl;
 
     public UserProfile(){}
 
