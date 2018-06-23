@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="image_size">120dp</dimen>
+    <dimen name="very_small_border">2dp</dimen>
     <dimen name="small_border">4dp</dimen>
     <dimen name="medium_border">8dp</dimen>
     <dimen name="large_border">16dp</dimen>
+    <dimen name="very_large_border">32dp</dimen>
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="toggle_height">42dp</dimen>
+
+
     <dimen name="small_text">14sp</dimen>
     <dimen name="large_text">16sp</dimen>
     <dimen name="title_text">24sp</dimen>

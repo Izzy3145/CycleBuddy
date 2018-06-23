@@ -22,11 +22,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.android.cyclebuddy.helpers.ContextPasser;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
-import com.example.android.cyclebuddy.ui.MessagesFragment;
-import com.example.android.cyclebuddy.ui.SearchListFragment;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -79,7 +77,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
 
-            //TODO: when opened from Search Splash, back button should lead back to the search list fragment
+            //TODO: when opened from Search Splash, back mainscreen_button should lead back to the search list fragment
         }
 
         //get userID and photo UUID from shared preferences

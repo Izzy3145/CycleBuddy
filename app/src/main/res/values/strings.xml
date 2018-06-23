@@ -51,6 +51,9 @@
     <string name="continue_editing">Continue editing</string>
     <string name="image_save_failed">Image failed to save</string>
     <string name="task_not_complete">Task not complete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 
     <!-- search fragments strings -->
     <string name="search_results">Search Results</string>
@@ -59,15 +62,19 @@
     <string name="no_data_available">No matching routes</string>
 
     <!-- offer fragments strings -->
-    <string name="be_a_buddy_exclamation">Be a buddy!</string>
-    <string name="offer_a_ride">Offer your company on a ride</string>
+    <string name="be_a_buddy_exclamation">Be a Cycle Buddy!</string>
+    <string name="find_a_buddy">Find a Cycle Buddy!</string>
+    <string name="find_button">Find a Buddy</string>
+    <string name="search_blurb">Find yourself a Cycle Buddy by searching for offered routes below:</string>
+    <string name="offer_blurb">Become a Cycle Buddy by offering your company on a ride</string>
     <string name="offer_from">Leaving from:</string>
     <string name="offer_via">Going via:</string>
     <string name="offer_to">Going to:</string>
     <string name="offer_time_taken">Estimated time taken (mins):</string>
-    <string name="example_from">e.g. Hackney or E8 4FB</string>
-    <string name="example_to">e.g. Farringdon or EC1M 6EJ</string>
-    <string name="example_via">e.g. Haggerston station</string>
+    <string name="return_also">Return journey also offered?</string>
+    <string name="example_from">e.g. Hackney</string>
+    <string name="example_to">e.g. Farringdon</string>
+    <string name="example_via">e.g. Angel</string>
     <string name="example_duration">e.g. 20</string>
 
 </resources>

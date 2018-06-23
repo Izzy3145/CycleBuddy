@@ -175,7 +175,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 UserProfile newUser;
                 mName = nameEditText.getText().toString();
                 mMiniBio = bioEditText.getText().toString();
-                //TODO: remove photoUrl
                 if (mPictureUUID == null || mPictureUUID.isEmpty()) {
                     newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
                             mCyclingFrequency, mMiniBio);
@@ -216,7 +215,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                // "Discard" button clicked, close the current activity.
+                                // "Discard" mainscreen_button clicked, close the current activity.
                                 finish();
                             }
                         };
@@ -413,7 +412,7 @@ public class EditProfileActivity extends AppCompatActivity {
     //set up warning dialogues when there are unsaved changes
     @Override
     public void onBackPressed() {
-        // If no fields have  changed, continue with handling back button press
+        // If no fields have  changed, continue with handling back mainscreen_button press
         if (!mProfileHasChanged) {
             super.onBackPressed();
             return;
@@ -423,7 +422,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // "Discard" button clicked, close the current activity.
+                        // "Discard" mainscreen_button clicked, close the current activity.
                         finish();
                     }
                 };
@@ -432,7 +431,7 @@ public class EditProfileActivity extends AppCompatActivity {
         showUnsavedChangesDialog(discardButtonClickListener);
     }
 
-    //unsaved changes dialogue, to sometimes be used when back button is pressed
+    //unsaved changes dialogue, to sometimes be used when back mainscreen_button is pressed
     private void showUnsavedChangesDialog(
             DialogInterface.OnClickListener discardButtonClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

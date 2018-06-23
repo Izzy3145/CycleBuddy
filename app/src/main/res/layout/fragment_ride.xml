@@ -31,21 +31,23 @@
     <Button
         android:id="@+id/rf_search_button"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:background="@drawable/button"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginBottom="@dimen/small_border"
+        android:textColor="@color/primary_text"
         style="@style/buttonStyle"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/search" />
+        android:background="@drawable/mainscreen_button"
+        android:text="@string/find_button"/>
 
     <Button
         android:id="@+id/rf_offer_button"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_margin="@dimen/small_border"
-        android:background="@drawable/button"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="@dimen/small_border"
+        android:layout_marginBottom="@dimen/medium_border"
+        android:textColor="@color/primary_text"
+        android:background="@drawable/mainscreen_button"
         style="@style/buttonStyle"
-        android:layout_gravity="center_horizontal"
         android:text="@string/offer" />
-
 
 </LinearLayout>

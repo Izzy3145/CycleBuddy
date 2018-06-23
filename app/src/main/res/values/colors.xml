@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FC8A10</color>
+    <!--<color name="colorPrimary">#FC8A10</color>
     <color name="colorPrimaryDark">#AB5A02</color>
     <color name="colorAccent">#8A10FC</color>
     <color name="light_green">#10FC8A</color>
     <color name="dark_green">#8002AB5A</color>
     <color name="black">#000000</color>
     <color name="dark_grey">#CBCBCB</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#FFFFFF</color> -->
+
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#E64A19</color>
+    <color name="colorPrimaryLight">#FFCCBC</color>
+    <color name="colorAccent">#7C4DFF</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="dark_grey">#CBCBCB</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color> -->
+
+
+
 
 
 </resources>

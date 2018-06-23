@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,16 +8,29 @@
     tools:context=".ui.SearchFragment">
 
     <TextView
-        android:id="@+id/need_a_buddy"
+        android:id="@+id/find_a_buddy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="@dimen/small_border"
+        android:layout_marginEnd="@dimen/large_border"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="8dp"
-        android:text="@string/need_a_buddy"
+        android:layout_marginTop="@dimen/large_border"
+        android:text="@string/find_a_buddy"
         android:textSize="@dimen/title_text"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/primary_text"
+        android:fontFamily="sans-serif"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/medium_border"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/small_border"
+        android:layout_marginBottom="@dimen/large_border"
+        android:text="@string/search_blurb"
+        android:textSize="@dimen/small_text"
+        android:textColor="@color/secondary_text"/>
 
     <TextView
         android:id="@+id/search_from_tv"
@@ -26,53 +38,55 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginTop="@dimen/large_border"
         android:text="@string/offer_from"
         android:textSize="@dimen/large_text" />
 
     <AutoCompleteTextView
         android:id="@+id/search_from_edit_text"
         android:layout_width="wrap_content"
-        android:minWidth="100dp"
         android:layout_height="wrap_content"
+        android:minWidth="250dp"
         android:hint="@string/example_from"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="@dimen/medium_border"
+        android:layout_marginEnd="@dimen/medium_border"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/medium_border" />
+        android:layout_marginTop="@dimen/small_border"
+        android:textSize="@dimen/small_text"/>
 
     <TextView
         android:id="@+id/search_to_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/medium_border"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="@dimen/small_border"
+        android:layout_marginEnd="@dimen/medium_border"
         android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/large_border"
         android:text="@string/offer_to"
         android:textSize="@dimen/large_text" />
 
     <AutoCompleteTextView
         android:id="@+id/search_to_edit_text"
         android:layout_width="wrap_content"
-        android:minWidth="100dp"
+        android:minWidth="250dp"
         android:layout_height="wrap_content"
-        android:hint="@string/example_via"
+        android:hint="@string/example_to"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginTop="@dimen/small_border"
         android:textSize="@dimen/small_text" />
 
     <Button
         android:id="@+id/sf_search_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="84dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/search"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginEnd="@dimen/medium_border"
+        android:layout_marginStart="@dimen/medium_border"
+        android:layout_marginTop="@dimen/very_large_border"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/find_button"
+        android:textColor="@color/white"
+        style="@style/buttonStyle"
+        android:background="@drawable/normal_button"/>
 
 </LinearLayout>
