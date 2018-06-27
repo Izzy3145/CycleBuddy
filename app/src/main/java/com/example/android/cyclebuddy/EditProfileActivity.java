@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -42,6 +43,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -65,14 +68,13 @@ public class EditProfileActivity extends AppCompatActivity {
     Spinner yearsCyclingSpinner;
     @BindView(R.id.spinner_cycling_frequency)
     Spinner cyclingFrequencySpinner;
-    @BindView(R.id.upload_button)
-    Button uploadButton;
     @BindView(R.id.save_button)
     Button saveButton;
     @BindView(R.id.name_edit_text)
     EditText nameEditText;
     @BindView(R.id.bio_edit_text)
     EditText bioEditText;
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mProfileDatabaseReference;
     private FirebaseStorage mFirebaseStorage;
@@ -88,8 +90,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private UserProfile mUserProfile;
     private SharedPreferences mSharedPreferences;
+
     private boolean mProfileHasChanged = false;
-    //set up the on TouchListener method, to be used later in onCreate
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -132,11 +134,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 //set data to views
                 if (mUserProfile != null) {
                     nameEditText.setText(mUserProfile.getUser());
-                    //buddyTypeTv.setText(mUserProfile.getBuddyType());
-                    //yearsCyclingTv.setText(mUserProfile.getYearsCycling());
-                    //cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    buddyTypeSpinner.setSelection(getIndexMethod(mUserProfile.getBuddyType()));
+                    yearsCyclingSpinner.setSelection(getIndexMethod(mUserProfile.getYearsCycling()));
+                    cyclingFrequencySpinner.setSelection(getIndexMethod(mUserProfile.getCyclingFrequency()));
                     bioEditText.setText(mUserProfile.getMiniBio());
-                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
                         Timber.v("No photo saved yet");
                     } else {
                         mPictureUUID = mUserProfile.getPhotoUrl();
@@ -144,9 +146,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
@@ -156,12 +158,6 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 choosePictureIntent();
-            }
-        });
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uploadImage();
             }
         });
 
@@ -210,18 +206,22 @@ public class EditProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // If some fields have changed, setup a dialog to warn the user.
-                DialogInterface.OnClickListener discardButtonClickListener =
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // "Discard" mainscreen_button clicked, close the current activity.
-                                finish();
-                            }
-                        };
-                // Show dialog that there are unsaved changes
-                showUnsavedChangesDialog(discardButtonClickListener);
-                return true;
+                if (!mProfileHasChanged) {
+                    super.onBackPressed();
+                } else {
+                    // If some fields have changed, setup a dialog to warn the user.
+                    DialogInterface.OnClickListener discardButtonClickListener =
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // "Discard" mainscreen_button clicked, close the current activity.
+                                    finish();
+                                }
+                            };
+                    // Show dialog that there are unsaved changes
+                    showUnsavedChangesDialog(discardButtonClickListener);
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -249,6 +249,7 @@ public class EditProfileActivity extends AppCompatActivity {
             try {//set image to image view
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 profileImageView.setImageBitmap(bitmap);
+                uploadImage();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -294,7 +295,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
-    private void downloadImage(String pictureUUID){
+    private void downloadImage(String pictureUUID) {
         //download the saved image
         StorageReference downloadRef = mStorageReference.child(pictureUUID);
 
@@ -328,6 +329,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         mBuddyType = getString(R.string.need_a_buddy);
                     } else if (selection.equals(getString(R.string.both))) {
                         mBuddyType = getString(R.string.both);
+                    } else if (selection.equals(getString(R.string.choose_spinner))) {
+                        mBuddyType = "";
                     }
                 }
             }
@@ -355,14 +358,18 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.not_since_child))) {
-                        mYearsCycling = getString(R.string.not_since_child);
-                    } else if (selection.equals(getString(R.string.zero_to_one))) {
-                        mYearsCycling = getString(R.string.zero_to_one);
-                    } else if (selection.equals(getString(R.string.one_to_three))) {
-                        mYearsCycling = getString(R.string.one_to_three);
+                    if (selection.equals(getString(R.string.never))) {
+                        mYearsCycling = getString(R.string.never);
+                    } else if (selection.equals(getString(R.string.less_than_year))) {
+                        mYearsCycling = getString(R.string.less_than_year);
+                    } else if (selection.equals(getString(R.string.year_or_so))) {
+                        mYearsCycling = getString(R.string.year_or_so);
+                    } else if (selection.equals(getString(R.string.few_years))) {
+                        mYearsCycling = getString(R.string.few_years);
                     } else if (selection.equals(getString(R.string.very_long))) {
                         mYearsCycling = getString(R.string.very_long);
+                    } else if (selection.equals(getString(R.string.choose_spinner))) {
+                        mYearsCycling = "";
                     }
                 }
             }
@@ -398,6 +405,10 @@ public class EditProfileActivity extends AppCompatActivity {
                         mCyclingFrequency = getString(R.string.several_days);
                     } else if (selection.equals(getString(R.string.everyday))) {
                         mCyclingFrequency = getString(R.string.everyday);
+                    } else if (selection.equals(getString(R.string.seldom_cycle))) {
+                        mCyclingFrequency = getString(R.string.seldom_cycle);
+                    } else if (selection.equals(getString(R.string.choose_spinner))) {
+                        mCyclingFrequency = "";
                     }
                 }
             }
@@ -415,22 +426,23 @@ public class EditProfileActivity extends AppCompatActivity {
         // If no fields have  changed, continue with handling back mainscreen_button press
         if (!mProfileHasChanged) {
             super.onBackPressed();
-            return;
-        }
-        // If some fields have changed, setup a dialog to warn the user.
-        DialogInterface.OnClickListener discardButtonClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // "Discard" mainscreen_button clicked, close the current activity.
-                        finish();
-                    }
-                };
+        } else {
+            // If some fields have changed, setup a dialog to warn the user.
+            DialogInterface.OnClickListener discardButtonClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // "Discard" mainscreen_button clicked, close the current activity.
+                            finish();
+                        }
+                    };
 
-        // Show dialog that there are unsaved changes
-        showUnsavedChangesDialog(discardButtonClickListener);
+            // Show dialog that there are unsaved changes
+            showUnsavedChangesDialog(discardButtonClickListener);
+        }
     }
 
+    //TODO: is continue editing button responding?
     //unsaved changes dialogue, to sometimes be used when back mainscreen_button is pressed
     private void showUnsavedChangesDialog(
             DialogInterface.OnClickListener discardButtonClickListener) {
@@ -450,5 +462,29 @@ public class EditProfileActivity extends AppCompatActivity {
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public int getIndexMethod(String spinnerString) {
+        if (spinnerString.equals(getResources().getString(R.string.be_a_buddy)) ||
+                spinnerString.equals(getResources().getString(R.string.never)) ||
+                spinnerString.equals(getResources().getString(R.string.everyday))) {
+            return 1;
+        } else if (spinnerString.equals(getResources().getString(R.string.need_a_buddy)) ||
+                spinnerString.equals(getResources().getString(R.string.less_than_year)) ||
+                spinnerString.equals(getResources().getString(R.string.several_days))) {
+            return 2;
+        } else if (spinnerString.equals(getResources().getString(R.string.both)) ||
+                spinnerString.equals(getResources().getString(R.string.year_or_so)) ||
+                spinnerString.equals(getResources().getString(R.string.once_week))) {
+            return 3;
+        } else if (spinnerString.equals(getResources().getString(R.string.few_years)) ||
+                spinnerString.equals(getResources().getString(R.string.once_month))) {
+            return 4;
+        } else if (spinnerString.equals(getResources().getString(R.string.very_long))||
+                spinnerString.equals(getResources().getString(R.string.seldom_cycle))) {
+            return 5;
+        } else {
+            return 0;
+        }
     }
 }

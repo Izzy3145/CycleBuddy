@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -45,7 +46,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.offer_to_edit_text)
     AutoCompleteTextView ofToEditText;
     @BindView(R.id.of_duration_edit_text)
-    AutoCompleteTextView ofDurationEditText;
+    EditText ofDurationEditText;
     @BindView(R.id.be_a_buddy)
     TextView ofBeABuddyTv;
     @BindView(R.id.returnToggle)
@@ -88,7 +89,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Offer </font>"));
+        //getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Offer </font>"));
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_offer, container, false);

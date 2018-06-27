@@ -38,7 +38,7 @@ public class OfferSplashFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Offer </font>"));
+        //getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Offer </font>"));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_offer_splash, container, false);
         ButterKnife.bind(this,view);

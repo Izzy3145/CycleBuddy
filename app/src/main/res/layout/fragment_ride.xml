@@ -34,9 +34,9 @@
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="@dimen/medium_border"
         android:layout_marginBottom="@dimen/small_border"
-        android:textColor="@color/primary_text"
+        android:textColor="@color/white"
         style="@style/buttonStyle"
-        android:background="@drawable/mainscreen_button"
+        android:background="@drawable/normal_button"
         android:text="@string/find_button"/>
 
     <Button
@@ -45,8 +45,8 @@
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="@dimen/small_border"
         android:layout_marginBottom="@dimen/medium_border"
-        android:textColor="@color/primary_text"
-        android:background="@drawable/mainscreen_button"
+        android:textColor="@color/white"
+        android:background="@drawable/normal_button"
         style="@style/buttonStyle"
         android:text="@string/offer" />
 

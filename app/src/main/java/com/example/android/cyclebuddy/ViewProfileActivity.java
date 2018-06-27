@@ -1,9 +1,5 @@
 package com.example.android.cyclebuddy;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
-
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,14 +38,22 @@ import timber.log.Timber;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
-    @BindView(R.id.profile_toolbar) Toolbar profileToolbar;
-    @BindView(R.id.view_profile_image_view) ImageView profileImageView;
-    @BindView(R.id.name_text_view) TextView nameTv;
-    @BindView(R.id.buddy_type_text_view) TextView buddyTypeTv;
-    @BindView(R.id.years_cycling_text_view) TextView yearsCyclingTv;
-    @BindView(R.id.cycling_frequency_text_view) TextView cyclingFreqeuncyTv;
-    @BindView(R.id.bio_text_view) TextView miniBioTv;
-    @BindView(R.id.message_button) Button messageButton;
+    @BindView(R.id.profile_toolbar)
+    Toolbar profileToolbar;
+    @BindView(R.id.view_profile_image_view)
+    ImageView profileImageView;
+    @BindView(R.id.name_text_view)
+    TextView nameTv;
+    @BindView(R.id.buddy_type_text_view)
+    TextView buddyTypeTv;
+    @BindView(R.id.years_cycling_text_view)
+    TextView yearsCyclingTv;
+    @BindView(R.id.cycling_frequency_text_view)
+    TextView cyclingFrequencyTv;
+    @BindView(R.id.bio_text_view)
+    TextView miniBioTv;
+    @BindView(R.id.message_button)
+    Button messageButton;
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
@@ -84,11 +87,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Bundle routeBundle = getIntent().getBundleExtra(PASSED_BUNDLE);
-        if(routeBundle != null) {
+        if (routeBundle != null) {
             mSelectedRoute = routeBundle.getParcelable(SELECTED_ROUTE);
             mSharedPrefUserID = mSelectedRoute.getUserID();
             enableMessageButton();
-            } else {
+        } else {
             mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
                     "unsuccessful");
         }
@@ -110,17 +113,18 @@ public class ViewProfileActivity extends AppCompatActivity {
                     nameTv.setText(mUserProfile.getUser());
                     buddyTypeTv.setText(mUserProfile.getBuddyType());
                     yearsCyclingTv.setText(mUserProfile.getYearsCycling());
-                    cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    cyclingFrequencyTv.setText(mUserProfile.getCyclingFrequency());
                     miniBioTv.setText(mUserProfile.getMiniBio());
-                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
                         // Load the image using Glide
                         Timber.v("No photo saved yet");
-                     } else {
+                    } else {
                         mPictureUUID = mUserProfile.getPhotoUrl();
                         downloadImage(mPictureUUID);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -150,8 +154,8 @@ public class ViewProfileActivity extends AppCompatActivity {
                                 // user is now signed out
                                 startActivity(new Intent(ViewProfileActivity.this, MainActivity.class));
                                 finish();
-                        }
-                     });
+                            }
+                        });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -174,11 +178,12 @@ public class ViewProfileActivity extends AppCompatActivity {
                 //set data to views
                 if (mUserProfile != null) {
                     nameTv.setText(mUserProfile.getUser());
-                    buddyTypeTv.setText(mUserProfile.getBuddyType());
-                    yearsCyclingTv.setText(mUserProfile.getYearsCycling());
-                    cyclingFreqeuncyTv.setText(mUserProfile.getCyclingFrequency());
+                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
+                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
+                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
                     miniBioTv.setText(mUserProfile.getMiniBio());
-                    if(mUserProfile.getPhotoUrl() == null||mUserProfile.getPhotoUrl().isEmpty()){
+
+                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
                         Timber.v("No photo saved yet");
                     } else {
                         mPictureUUID = mUserProfile.getPhotoUrl();
@@ -186,6 +191,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -193,10 +199,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void downloadImage(String pictureUUID){
+    private void downloadImage(String pictureUUID) {
         //download the saved image
         StorageReference downloadRef = mStorageReference.child(pictureUUID);
-
         // Load the image using Glide
         Glide.with(this)
                 .using(new FirebaseImageLoader())
@@ -205,7 +210,40 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .into(profileImageView);
     }
 
-    public void enableMessageButton(){
+    public void enableMessageButton() {
         messageButton.setVisibility(View.VISIBLE);
+    }
+
+    public String getSummaryText(String dbString) {
+
+        if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
+            return "\u2713  I would like to be a Cycle Buddy";
+        } else if (dbString.equals(getResources().getString(R.string.need_a_buddy))) {
+            return "\u2713  I would like to find a Cycle Buddy";
+        } else if (dbString.equals(getResources().getString(R.string.both))) {
+            return "\u2713  I would like to both be and find a Cycle Buddy";
+        } else if (dbString.equals(getResources().getString(R.string.never))) {
+            return "\u2713  I've never cycled in London before";
+        } else if (dbString.equals(getResources().getString(R.string.less_than_year))) {
+            return "\u2713  I've been cycling in London for less than a year";
+        } else if (dbString.equals(getResources().getString(R.string.year_or_so))) {
+            return "\u2713  I've been cycling in London for a year or so";
+        } else if (dbString.equals(getResources().getString(R.string.few_years))) {
+            return "\u2713  I've been cycling in London for several years now";
+        } else if (dbString.equals(getResources().getString(R.string.very_long))) {
+            return "\u2713  I've been cycling in London for as long as I can remember";
+        } else if (dbString.equals(getResources().getString(R.string.everyday))) {
+            return "\u2713  I cycle nearly everyday";
+        } else if (dbString.equals(getResources().getString(R.string.several_days))) {
+            return "\u2713  I cycle several days a week";
+        } else if (dbString.equals(getResources().getString(R.string.once_week))) {
+            return "\u2713  I cycle about once a week";
+        } else if (dbString.equals(getResources().getString(R.string.once_month))) {
+            return "\u2713  I cycle about once a month";
+        } else if (dbString.equals(getResources().getString(R.string.seldom_cycle))) {
+            return "\u2713  I seldom cycle";
+        } else {
+            return "";
+        }
     }
 }

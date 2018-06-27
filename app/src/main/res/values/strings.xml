@@ -29,19 +29,24 @@
     <!-- profile strings -->
     <string name="name">User name</string>
     <string name="save_button">Save</string>
+    <string name="reviews">Reviews</string>
     <string name="message_button">Send Message</string>
-    <string name="mini_bio">Mini bio</string>
+    <string name="review_button">Leave Review</string>
+    <string name="mini_bio">Mini bio:</string>
     <string name="buddy_type">Are you a buddy, or in need of a buddy?</string>
     <string name="be_a_buddy">Be a buddy</string>
     <string name="need_a_buddy">Need a buddy</string>
     <string name="both">Both</string>
-    <string name="how_long_cycling">How long have you been cycling?</string>
-    <string name="not_since_child">Not since I was a child</string>
-    <string name="zero_to_one">0 to 1 years</string>
-    <string name="one_to_three">1 to 3 years</string>
-    <string name="very_long">My whole life</string>
+    <string name="how_long_cycling">How long have you been cycling in London?</string>
+    <string name="never">Never cycled in London</string>
+    <string name="less_than_year">Less than a year</string>
+    <string name="few_years">A few years</string>
+    <string name="year_or_so">A year or so</string>
+    <string name="very_long">As long as I can remember</string>
     <string name="how_often_cycling">How often do you cycle?</string>
     <string name="once_month">Once a month</string>
+    <string name="choose_spinner">Please choose</string>
+    <string name="seldom_cycle">Seldom</string>
     <string name="once_week">Once a week</string>
     <string name="several_days">Several days a week</string>
     <string name="everyday">Everyday</string>
@@ -53,6 +58,11 @@
     <string name="task_not_complete">Task not complete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="edit_profile_cd">Add profile picture</string>
+    <string name="view_profile_cd">View profile picture</string>
+    <string name="username">Username:</string>
+    <string name="mini_bio_blurb">Tell us a little something about yourself</string>
+
 
 
     <!-- search fragments strings -->

@@ -1,7 +1,6 @@
 package com.example.android.cyclebuddy.ui;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -50,7 +49,7 @@ public class RideFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Cycle Buddy </font>"));
+        //getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Cycle Buddy </font>"));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ride, container, false);
         ButterKnife.bind(this, view);

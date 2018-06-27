@@ -13,58 +13,124 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/view_profile_image_view"
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
-            android:layout_marginLeft="@dimen/large_border"
-            android:src="@drawable/ic_add_a_photo"
+            android:layout_marginTop="@dimen/large_border"
+            android:layout_marginStart="@dimen/large_border"
+            android:layout_marginBottom="@dimen/large_border"
+            android:src="@drawable/ic_profile_picture_placeholder"
+            android:contentDescription="@string/view_profile_cd"
             android:padding="@dimen/medium_border"/>
 
         <TextView
             android:id="@+id/name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_border" />
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/title_text"
+            android:textColor="@color/primary_text"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/very_large_border" />
 
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/buddy_type_text_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:padding="@dimen/medium_border" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/large_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/large_text"/>
 
     <TextView
         android:id="@+id/years_cycling_text_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:padding="@dimen/medium_border" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/large_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/large_text"/>
 
     <TextView
         android:id="@+id/cycling_frequency_text_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:padding="@dimen/medium_border" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/large_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/large_text" />
+
+    <TextView
+        android:id="@+id/bio_text_view_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/large_text"
+        android:textColor="@color/primary_text"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/very_large_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:text="@string/mini_bio"/>
 
     <TextView
         android:id="@+id/bio_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/large_border" />
+        android:textSize="@dimen/large_text"
+        android:textColor="@color/primary_text"
+        android:layout_marginTop="@dimen/small_border"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:layout_marginBottom="@dimen/medium_border"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
+    <TextView
+        android:id="@+id/reviews_text_view_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/medium_border"
+        android:textSize="@dimen/large_text"
+        android:textColor="@color/primary_text"
+        android:text="@string/reviews"/>
+
+    <TextView
+        android:id="@+id/reviews_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:textColor="@color/primary_text"
+        android:layout_marginStart="@dimen/large_border" />
 
     <Button
         android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/message_button"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/review_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

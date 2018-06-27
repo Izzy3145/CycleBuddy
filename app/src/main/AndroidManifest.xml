@@ -13,9 +13,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/cycle_buddy"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_cb_icon_tsp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 

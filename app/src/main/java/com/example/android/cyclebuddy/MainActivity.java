@@ -1,8 +1,9 @@
 package com.example.android.cyclebuddy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +26,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
+import com.example.android.cyclebuddy.helpers.CustomTypefaceSpan;
 import com.example.android.cyclebuddy.ui.MessagesFragment;
 import com.example.android.cyclebuddy.ui.OfferFragment;
 import com.example.android.cyclebuddy.ui.RideFragment;
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
     @BindView(R.id.navigation)BottomNavigationView navigation;
     @BindView(R.id.main_toolbar) Toolbar mainToolbar;
+
     private FragmentManager fragmentManager;
     private Bundle mReceivedExtras;
 
@@ -54,10 +62,19 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(Html.fromHtml("<font color='#FFFFFF'> Cycle Buddy </font>"));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        //set up actionbar
         setSupportActionBar(mainToolbar);
+        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
+        //set action bar title with custom font
+        Typeface titleFont = Typeface.createFromAsset(getAssets(), "MuliBold.ttf");
+        SpannableStringBuilder SS = new SpannableStringBuilder("Cycle Buddy");
+        SS.setSpan (new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        //SS.setSpan(new AbsoluteSizeSpan(75), 0, SS.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(SS);
 
         //set up Bottom Navigation
         BottomNavigationHelper.removeShiftMode(navigation);
