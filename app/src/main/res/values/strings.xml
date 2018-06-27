@@ -3,6 +3,7 @@
 
     <!-- activity headings -->
     <string name="cycle_buddy">Cycle Buddy</string>
+    <string name="cycle_buddy_blurb">Building cycling confidence with buddies</string>
     <string name="search_rides">Search Rides</string>
     <string name="offer_rides">Offer A Ride</string>
     <string name="messages">Messages</string>

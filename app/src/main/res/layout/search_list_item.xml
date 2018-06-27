@@ -1,60 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/result_from"
-        android:textSize="@dimen/large_text"
-        android:padding="@dimen/medium_border" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/result_to"
-        android:textSize="@dimen/large_text"
-        android:padding="@dimen/medium_border" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/result_duration"
-        android:textSize="@dimen/large_text"
-        android:padding="@dimen/medium_border" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/result_userID"
-        android:textSize="@dimen/large_text"
-        android:padding="@dimen/medium_border" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/click"
-        android:textSize="@dimen/large_text"
-        android:padding="@dimen/medium_border" />
+    <ImageView
+        android:id="@+id/small_image_view_rv"
+        android:layout_width="@dimen/small_image_size"
+        android:layout_height="@dimen/small_image_size"
+        android:layout_marginBottom="@dimen/small_border"
+        android:layout_marginEnd="@dimen/small_border"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/small_border"
+        android:contentDescription="@string/view_profile_cd"
+        android:src="@drawable/ic_profile_picture_placeholder" />
 
     <LinearLayout
-        android:id="@+id/llExpandArea"
-        android:visibility="gone"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/result_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:text="Item One" />
+            android:layout_marginStart="@dimen/medium_border"
+            android:layout_marginEnd="@dimen/medium_border"
+            android:layout_marginTop="@dimen/medium_border"
+            android:layout_marginBottom="@dimen/small_border"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_border"
+            android:layout_marginEnd="@dimen/medium_border"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/result_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/large_text" />
+
+            <TextView
+                android:id="@+id/result_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/large_text" />
+
+        </LinearLayout>
+
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:text="Item Two" />
+                android:id="@+id/result_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_border"
+                android:layout_marginEnd="@dimen/medium_border"
+                android:layout_marginBottom="@dimen/medium_border"
+                android:textSize="@dimen/large_text" />
 
     </LinearLayout>
 

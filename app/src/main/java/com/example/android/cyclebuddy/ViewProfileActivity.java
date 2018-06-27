@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.auth.AuthUI;
@@ -52,6 +53,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     TextView cyclingFrequencyTv;
     @BindView(R.id.bio_text_view)
     TextView miniBioTv;
+    @BindView(R.id.bio_text_view_header)
+    TextView miniBioHeaderTv;
     @BindView(R.id.message_button)
     Button messageButton;
 
@@ -67,6 +70,8 @@ public class ViewProfileActivity extends AppCompatActivity {
     private OfferedRoute mSelectedRoute;
     private static final String PASSED_BUNDLE = "passed bundle";
     private static final String SELECTED_ROUTE = "selectedRoute";
+    private static final String NO_ENTRY = "empty";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,11 +182,30 @@ public class ViewProfileActivity extends AppCompatActivity {
                 mUserProfile = dataSnapshot.getValue(UserProfile.class);
                 //set data to views
                 if (mUserProfile != null) {
+                    //set views to stored data
                     nameTv.setText(mUserProfile.getUser());
-                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
-                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
-                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
+
+                    if(getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)){
+                        buddyTypeTv.setVisibility(View.GONE);
+                    } else {
+                        buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
+                    }
+
+                    if(getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)){
+                        yearsCyclingTv.setVisibility(View.GONE);
+                    } else {
+                        yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
+                    }
+
+                    if(getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)){
+                        cyclingFrequencyTv.setVisibility(View.GONE);
+                    } else {
+                        cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
+                    }
+
+
                     miniBioTv.setText(mUserProfile.getMiniBio());
+
 
                     if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
                         Timber.v("No photo saved yet");
@@ -207,6 +231,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .using(new FirebaseImageLoader())
                 .load(downloadRef)
                 .placeholder(R.drawable.ic_add_a_photo)
+                .transform(new CircularImageTransform(ViewProfileActivity.this))
                 .into(profileImageView);
     }
 
@@ -243,7 +268,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         } else if (dbString.equals(getResources().getString(R.string.seldom_cycle))) {
             return "\u2713  I seldom cycle";
         } else {
-            return "";
+            return NO_ENTRY;
         }
     }
 }

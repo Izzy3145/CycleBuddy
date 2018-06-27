@@ -10,7 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/search_results"
-        android:textSize="@dimen/large_text"/>
+        android:textSize="@dimen/title_text"
+        android:layout_margin="@dimen/large_border"
+        android:textStyle="bold"
+        android:textColor="@color/primary_text"
+        android:fontFamily="sans-serif"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/results_recycler_view"
@@ -24,6 +28,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:text="@string/no_data_available" />
+        android:text="@string/no_data_available"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/large_text"/>
 
 </LinearLayout>

@@ -20,6 +20,7 @@ public class OfferedRoute implements Parcelable{
         this.to = to;
         this.duration = duration;
         this.userID = userID;
+
     }
 
     public OfferedRoute(String from, String via, String to, int duration, String userID){
@@ -42,7 +43,14 @@ public class OfferedRoute implements Parcelable{
         return to;
     }
 
+    public String getToString(){
+        return " to " + to;
+    }
+
     public int getDuration(){return duration;}
+
+    public String getDurationString(){return "Journey time: " + String.valueOf(duration) + "mins";}
+
 
     public String getUserID(){return userID;}
 

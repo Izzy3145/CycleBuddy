@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -175,8 +176,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
                             mCyclingFrequency, mMiniBio);
                 } else {
-                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mMiniBio, mYearsCycling,
-                            mCyclingFrequency, mPictureUUID);
+                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
+                            mCyclingFrequency, mMiniBio, mPictureUUID);
                 }
                 mProfileDatabaseReference.setValue(newUser);
                 finish();
@@ -303,6 +304,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(downloadRef)
+                .transform(new CircularImageTransform(EditProfileActivity.this))
                 .placeholder(R.drawable.ic_add_a_photo)
                 .into(profileImageView);
     }

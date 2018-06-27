@@ -8,25 +8,33 @@
     android:background="@color/dark_grey"
     android:orientation="vertical">
 
-    <!-- <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/cycle_buddy"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"/> -->
-
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_mikecyclebuddy2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_grey"
+        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginBottom="@dimen/medium_border"
+        android:layout_marginEnd="@dimen/large_border"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/cycle_buddy_blurb"
+        android:textSize="@dimen/large_text"
+        android:textColor="@color/primary_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_grey"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
 
     <Button
         android:id="@+id/rf_search_button"
@@ -45,9 +53,12 @@
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="@dimen/small_border"
         android:layout_marginBottom="@dimen/medium_border"
+        android:layout_marginLeft="@dimen/medium_border"
         android:textColor="@color/white"
         android:background="@drawable/normal_button"
         style="@style/buttonStyle"
         android:text="@string/offer" />
+
+    </LinearLayout>
 
 </LinearLayout>

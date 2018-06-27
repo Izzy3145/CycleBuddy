@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/title_text"
-            android:textColor="@color/primary_text"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginStart="@dimen/very_large_border" />
 
@@ -100,7 +100,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider" />
+        android:background="@color/divider"
+        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginBottom="@dimen/medium_border"/>
 
     <TextView
         android:id="@+id/reviews_text_view_header"
