@@ -54,7 +54,6 @@ public class SearchSplashFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       // getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Search </font>"));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search_splash, container, false);
         ButterKnife.bind(this,view);

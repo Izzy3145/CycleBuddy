@@ -1,23 +1,21 @@
 package com.example.android.cyclebuddy;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,12 +25,11 @@ import android.widget.Toast;
 
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
 import com.example.android.cyclebuddy.helpers.CustomTypefaceSpan;
-import com.example.android.cyclebuddy.ui.MessagesFragment;
+import com.example.android.cyclebuddy.ui.MessageListFragment;
 import com.example.android.cyclebuddy.ui.OfferFragment;
 import com.example.android.cyclebuddy.ui.RideFragment;
 import com.example.android.cyclebuddy.ui.SearchFragment;
 import com.firebase.ui.auth.AuthUI;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,12 +37,13 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements RideFragment.OnNavigationItemChanged {
 
-    @BindView(R.id.navigation)BottomNavigationView navigation;
-    @BindView(R.id.main_toolbar) Toolbar mainToolbar;
+    @BindView(R.id.navigation)
+    BottomNavigationView navigation;
+    @BindView(R.id.main_toolbar)
+    Toolbar mainToolbar;
 
     private FragmentManager fragmentManager;
     private Bundle mReceivedExtras;
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         //set action bar title with custom font
         Typeface titleFont = Typeface.createFromAsset(getAssets(), "RobotoRegular.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Cycle Buddy");
-        SS.setSpan (new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SS.setSpan(new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         //SS.setSpan(new AbsoluteSizeSpan(75), 0, SS.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(SS);
@@ -81,20 +79,25 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //inflate initial fragment
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             return;
         }
 
-        if(getIntent().getExtras() != null){
-            mReceivedExtras = getIntent().getExtras();
-            //TODO: set these extras as arguments to other fragments
-        }
-
         fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, RideFragment.newInstance());
-        transaction.addToBackStack(null);
-        transaction.commit();
+
+        if (getIntent().getExtras() != null) {
+            mReceivedExtras = getIntent().getExtras();
+            //TODO: use the passed userID
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, MessageListFragment.newInstance());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, RideFragment.newInstance());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
 
         //set up Firebase Authentication
         mUsername = ANONYMOUS;
@@ -104,8 +107,12 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    //onSignedInInitialize(user.getDisplayName());
                     mUsername = user.getDisplayName();
+                    userID = user.getUid();
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(getString(R.string.preference_user_ID), userID);
+                    editor.apply();
                 } else {
                     //onSignedOutCleanup();
                     mUsername = ANONYMOUS;
@@ -122,9 +129,8 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 }
             }
         };
-        userIDtoSharedPreferences();
+        //userIDtoSharedPreferences();
     }
-
 
 
     @Override
@@ -136,45 +142,41 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.view_own_profile:
                 Intent startProfileActivity = new Intent(this, ViewProfileActivity.class);
                 startActivity(startProfileActivity);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mAuth.removeAuthStateListener(mAuthStateListener);
-        //detachDatabaseReadListener();
-        //mMessageAdapter.clear();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        userIDtoSharedPreferences();
+        //userIDtoSharedPreferences();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    public void userIDtoSharedPreferences(){
-        //save UserID in sharedPreferences for use across the app
-        mFirebaseUser = mAuth.getCurrentUser();
-        if(mFirebaseUser != null){
-            userID = mFirebaseUser.getUid();
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(getString(R.string.preference_user_ID), userID);
-            editor.apply();
-
-            Timber.v(userID);
-        } else {
-            Timber.v(userID);
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAuth.removeAuthStateListener(mAuthStateListener);
     }
+
+
+//    public void userIDtoSharedPreferences() {
+//        //save UserID in sharedPreferences for use across the app
+//        mFirebaseUser = mAuth.getCurrentUser();
+//        if (mFirebaseUser != null) {
+//
+//
+//            Timber.v(userID);
+//        } else {
+//            Timber.v(userID);
+//        }
+//    }
 
     //set up BottomNavigation listener to inflate the necessary fragment
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                     selectedFragment = OfferFragment.newInstance();
                     break;
                 case R.id.navigation_messages:
-                    selectedFragment = MessagesFragment.newInstance();
+                    selectedFragment = MessageListFragment.newInstance();
                     break;
             }
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -216,10 +218,10 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN){
-            if(resultCode == RESULT_OK) {
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED){
+            } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Sign in cancelled.", Toast.LENGTH_SHORT).show();
                 finish();
             }

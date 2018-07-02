@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,10 @@ import android.app.Fragment;
 import android.widget.TextView;
 
 import com.example.android.cyclebuddy.R;
-import com.example.android.cyclebuddy.helpers.SearchResultsAdapter;
+import com.example.android.cyclebuddy.adapters.SearchResultsAdapter;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +42,6 @@ public class SearchListFragment extends Fragment implements
 
     private static final String DATASET_1 = "dataSet1";
     private static final String SELECTED_ROUTE = "selectedRoute";
-
     private ArrayList<OfferedRoute> foundRoutesList;
 
     public SearchListFragment() {
@@ -76,8 +73,6 @@ public class SearchListFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //getActivity().setTitle(Html.fromHtml("<font color='#FFFFFF'> Search </font>"));
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search_list, container, false);
         ButterKnife.bind(this,view);

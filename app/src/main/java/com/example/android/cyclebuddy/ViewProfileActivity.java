@@ -70,13 +70,14 @@ public class ViewProfileActivity extends AppCompatActivity {
     private OfferedRoute mSelectedRoute;
     private static final String PASSED_BUNDLE = "passed bundle";
     private static final String SELECTED_ROUTE = "selectedRoute";
+    private static final String CHOSEN_USER_ID = "chosen user ID";
+    private static final String CHOSEN_USER_ID_PASSED = "chosen user ID passed";
     private static final String NO_ENTRY = "empty";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(Html.fromHtml("<font color='#FFFFFF'> View Profile </font>"));
         setContentView(R.layout.activity_view_profile);
         ButterKnife.bind(this);
 
@@ -109,32 +110,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
 
         //download all other values
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUserProfile = dataSnapshot.getValue(UserProfile.class);
-                //set data to views
-                if (mUserProfile != null) {
-                    nameTv.setText(mUserProfile.getUser());
-                    buddyTypeTv.setText(mUserProfile.getBuddyType());
-                    yearsCyclingTv.setText(mUserProfile.getYearsCycling());
-                    cyclingFrequencyTv.setText(mUserProfile.getCyclingFrequency());
-                    miniBioTv.setText(mUserProfile.getMiniBio());
-                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
-                        // Load the image using Glide
-                        Timber.v("No photo saved yet");
-                    } else {
-                        mPictureUUID = mUserProfile.getPhotoUrl();
-                        downloadImage(mPictureUUID);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        mRef.addValueEventListener(profileDataListener);
     }
 
     @Override
@@ -176,52 +152,48 @@ public class ViewProfileActivity extends AppCompatActivity {
                 "unsuccessful");
 
         //download all other values
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUserProfile = dataSnapshot.getValue(UserProfile.class);
-                //set data to views
-                if (mUserProfile != null) {
-                    //set views to stored data
-                    nameTv.setText(mUserProfile.getUser());
-
-                    if(getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)){
-                        buddyTypeTv.setVisibility(View.GONE);
-                    } else {
-                        buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
-                    }
-
-                    if(getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)){
-                        yearsCyclingTv.setVisibility(View.GONE);
-                    } else {
-                        yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
-                    }
-
-                    if(getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)){
-                        cyclingFrequencyTv.setVisibility(View.GONE);
-                    } else {
-                        cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
-                    }
-
-
-                    miniBioTv.setText(mUserProfile.getMiniBio());
-
-
-                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
-                        Timber.v("No photo saved yet");
-                    } else {
-                        mPictureUUID = mUserProfile.getPhotoUrl();
-                        downloadImage(mPictureUUID);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        mRef.addValueEventListener(profileDataListener);
     }
+
+    ValueEventListener profileDataListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mUserProfile = dataSnapshot.getValue(UserProfile.class);
+            //set data to views
+            if (mUserProfile != null) {
+                //set views to stored data
+                nameTv.setText(mUserProfile.getUser());
+                if(getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)){
+                    buddyTypeTv.setVisibility(View.GONE);
+                } else {
+                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
+                }
+                if(getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)){
+                    yearsCyclingTv.setVisibility(View.GONE);
+                } else {
+                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
+                }
+                if(getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)){
+                    cyclingFrequencyTv.setVisibility(View.GONE);
+                } else {
+                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
+                }
+
+                miniBioTv.setText(mUserProfile.getMiniBio());
+
+                if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
+                    Timber.v("No photo saved yet");
+                } else {
+                    mPictureUUID = mUserProfile.getPhotoUrl();
+                    downloadImage(mPictureUUID);
+                }
+        }}
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
 
     private void downloadImage(String pictureUUID) {
         //download the saved image
@@ -235,38 +207,49 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .into(profileImageView);
     }
 
+
     public void enableMessageButton() {
         messageButton.setVisibility(View.VISIBLE);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent backToMainIntent = new Intent(ViewProfileActivity.this, MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(CHOSEN_USER_ID, mSharedPrefUserID);
+                backToMainIntent.putExtra(CHOSEN_USER_ID, bundle);
+                startActivity(backToMainIntent);
+            }
+        });
     }
 
     public String getSummaryText(String dbString) {
 
         if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
-            return "\u2713  I would like to be a Cycle Buddy";
+            return getResources().getString(R.string.vp_want_cycle_buddy);
         } else if (dbString.equals(getResources().getString(R.string.need_a_buddy))) {
-            return "\u2713  I would like to find a Cycle Buddy";
+            return getResources().getString(R.string.vp_need_cycle_buddy);
         } else if (dbString.equals(getResources().getString(R.string.both))) {
-            return "\u2713  I would like to both be and find a Cycle Buddy";
+            return getResources().getString(R.string.vp_both_want_need);
         } else if (dbString.equals(getResources().getString(R.string.never))) {
-            return "\u2713  I've never cycled in London before";
+            return getResources().getString(R.string.vp_never_cycled_in_london);
         } else if (dbString.equals(getResources().getString(R.string.less_than_year))) {
-            return "\u2713  I've been cycling in London for less than a year";
+            return getResources().getString(R.string.vp_cycling_less_than_year);
         } else if (dbString.equals(getResources().getString(R.string.year_or_so))) {
-            return "\u2713  I've been cycling in London for a year or so";
+            return getResources().getString(R.string.vp_cycling_year_or_so);
         } else if (dbString.equals(getResources().getString(R.string.few_years))) {
-            return "\u2713  I've been cycling in London for several years now";
+            return getResources().getString(R.string.vp_cycling_few_years);
         } else if (dbString.equals(getResources().getString(R.string.very_long))) {
-            return "\u2713  I've been cycling in London for as long as I can remember";
+            return getResources().getString(R.string.vp_cycling_long_time);
         } else if (dbString.equals(getResources().getString(R.string.everyday))) {
-            return "\u2713  I cycle nearly everyday";
+            return getResources().getString(R.string.vp_everyday);
         } else if (dbString.equals(getResources().getString(R.string.several_days))) {
-            return "\u2713  I cycle several days a week";
+            return getResources().getString(R.string.vp_several_days);
         } else if (dbString.equals(getResources().getString(R.string.once_week))) {
-            return "\u2713  I cycle about once a week";
+            return getResources().getString(R.string.vp_once_week);
         } else if (dbString.equals(getResources().getString(R.string.once_month))) {
-            return "\u2713  I cycle about once a month";
+            return getResources().getString(R.string.vp_once_month);
         } else if (dbString.equals(getResources().getString(R.string.seldom_cycle))) {
-            return "\u2713  I seldom cycle";
+            return getResources().getString(R.string.vp_seldom_cycle);
         } else {
             return NO_ENTRY;
         }

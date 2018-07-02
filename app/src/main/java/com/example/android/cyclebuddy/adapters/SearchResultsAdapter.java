@@ -1,4 +1,4 @@
-package com.example.android.cyclebuddy.helpers;
+package com.example.android.cyclebuddy.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,10 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.R;
-import com.example.android.cyclebuddy.ViewProfileActivity;
+import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
-import com.example.android.cyclebuddy.ui.SearchListFragment;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

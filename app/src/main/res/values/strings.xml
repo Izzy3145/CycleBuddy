@@ -21,7 +21,6 @@
     <string name="title_messages">Messages</string>
     <string name="profile">Profile</string>
     <string name="sign_out">Sign Out</string>
-
     <string name="search">Search For Rides</string>
     <string name="offer">Offer A Ride</string>
     <string name="searchsplash">Good luck on your journey!</string>
@@ -63,8 +62,19 @@
     <string name="view_profile_cd">View profile picture</string>
     <string name="username">Username:</string>
     <string name="mini_bio_blurb">Tell us a little something about yourself</string>
-
-
+    <string name="vp_want_cycle_buddy"> ✓   I would like to be a Cycle Buddy</string>
+    <string name="vp_need_cycle_buddy"> ✓   I would like to find a Cycle Buddy</string>
+    <string name="vp_both_want_need"> ✓   I would like to both be and find a Cycle Buddy</string>
+    <string name="vp_never_cycled_in_london"> ✓   I\'ve never cycled in London before</string>
+    <string name="vp_cycling_less_than_year"> ✓   I\'ve been cycling in London for less than a year</string>
+    <string name="vp_cycling_year_or_so"> ✓   I\'ve been cycling in London for a year or so</string>
+    <string name="vp_cycling_few_years"> ✓   I\'ve been cycling in London for a few years now</string>
+    <string name="vp_cycling_long_time"> ✓   I\'ve been cycling in London for as long as I can remember</string>
+    <string name="vp_everyday"> ✓   I cycle nearly everyday</string>
+    <string name="vp_several_days"> ✓   I cycle several days a week</string>
+    <string name="vp_once_week"> ✓   I cycle about once a week</string>
+    <string name="vp_once_month"> ✓   I cycle about once a month</string>
+    <string name="vp_seldom_cycle"> ✓   I seldom cycle</string>
 
     <!-- search fragments strings -->
     <string name="search_results">Search Results</string>
@@ -87,5 +97,12 @@
     <string name="example_to">e.g. Farringdon</string>
     <string name="example_via">e.g. Angel</string>
     <string name="example_duration">e.g. 20</string>
+
+    <!-- messages strings -->
+    <string name="no_open_conversations">No open conversations</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

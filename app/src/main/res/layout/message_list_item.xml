@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/small_image_view_messages_rv"
+        android:layout_width="@dimen/small_image_size"
+        android:layout_height="@dimen/small_image_size"
+        android:layout_marginBottom="@dimen/small_border"
+        android:layout_marginEnd="@dimen/small_border"
+        android:layout_marginStart="@dimen/large_border"
+        android:layout_marginTop="@dimen/small_border"
+        android:contentDescription="@string/view_profile_cd"
+        android:src="@drawable/ic_profile_picture_placeholder" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/contact_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_border"
+            android:layout_marginEnd="@dimen/medium_border"
+            android:layout_marginTop="@dimen/medium_border"
+            android:layout_marginBottom="@dimen/small_border"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"
+            android:hint="Izzy Stannett"/>
+
+        <TextView
+            android:id="@+id/most_recent_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_border"
+            android:layout_marginEnd="@dimen/medium_border"
+            android:layout_marginTop="@dimen/medium_border"
+            android:layout_marginBottom="@dimen/small_border"
+            android:textSize="@dimen/large_text"
+            android:hint="Hi there"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/last_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="@dimen/medium_border"
+        android:layout_marginEnd="@dimen/medium_border"
+        android:layout_marginTop="@dimen/medium_border"
+        android:layout_marginBottom="@dimen/small_border"
+        android:textSize="@dimen/large_text"
+        android:hint="time"/>
+
+</LinearLayout>
