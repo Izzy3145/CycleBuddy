@@ -107,11 +107,6 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         return mDataset.size();
     }
 
-//    public void setStepsForNextView(List<Step> selectedSteps){
-//        mSteps = selectedSteps;
-//        notifyDataSetChanged();
-//    }
-
     //create interface that requires onClick Method to be implemented
     public interface SearchResultsAdapterListener {
         void onClickMethod(ArrayList<OfferedRoute> dataset, int position);

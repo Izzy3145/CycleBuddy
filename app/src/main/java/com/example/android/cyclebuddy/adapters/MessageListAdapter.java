@@ -64,7 +64,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         MessageSummary messageSummary = mDataset.get(position);
-        holder.contactUsernameTv.setText(messageSummary.getUsername());
+        //holder.contactUsernameTv.setText(messageSummary.getUsername());
         holder.lastMessageTv.setText(messageSummary.getLastMessage());
 
 //        mFirebaseDatabase = FirebaseDatabase.getInstance();

@@ -77,7 +77,7 @@ public class MessageListFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fm = getActivity().getFragmentManager();
-        MessageSummary onlyMessageSummary = new MessageSummary(null, "Jake Goodman", "I love you, you're great");
+        MessageSummary onlyMessageSummary = new MessageSummary("", "Izzy","Danny");
         messageList = new ArrayList<MessageSummary>();
         messageList.add(onlyMessageSummary);
     }

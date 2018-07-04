@@ -25,6 +25,10 @@ import android.widget.Toast;
 
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
 import com.example.android.cyclebuddy.helpers.CustomTypefaceSpan;
+import com.example.android.cyclebuddy.model.Buddies;
+import com.example.android.cyclebuddy.model.Message;
+import com.example.android.cyclebuddy.model.MessageSummary;
+import com.example.android.cyclebuddy.ui.ConversationFragment;
 import com.example.android.cyclebuddy.ui.MessageListFragment;
 import com.example.android.cyclebuddy.ui.OfferFragment;
 import com.example.android.cyclebuddy.ui.RideFragment;
@@ -32,6 +36,8 @@ import com.example.android.cyclebuddy.ui.SearchFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -54,8 +60,13 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser mFirebaseUser;
 
+
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
+    private static final String CONVO_PUSH_KEY = "convo_push_key";
+    private static final String CONVERSATION_UID = "conversation UID";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +95,6 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         }
 
         fragmentManager = getFragmentManager();
-
-        if (getIntent().getExtras() != null) {
-            mReceivedExtras = getIntent().getExtras();
-            //TODO: use the passed userID
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, MessageListFragment.newInstance());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, RideFragment.newInstance());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
 
         //set up Firebase Authentication
         mUsername = ANONYMOUS;
@@ -129,9 +126,26 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 }
             }
         };
-        //userIDtoSharedPreferences();
-    }
 
+        if (getIntent().getExtras() != null) {
+            String convoPushID = getIntent().getStringExtra(CONVO_PUSH_KEY);
+            ConversationFragment cf = ConversationFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putString(CONVERSATION_UID, convoPushID);
+            cf.setArguments(bundle);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, cf);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, RideFragment.newInstance());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+        //userIDtoSharedPreferences();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

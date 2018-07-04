@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,12 +20,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.model.Message;
+import com.example.android.cyclebuddy.model.MessageSummary;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,18 +68,18 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
-    private DatabaseReference mRef;
+    private DatabaseReference mUsersDatabaseRef;
     private StorageReference mStorageReference;
     private UserProfile mUserProfile;
     private String mSharedPrefUserID;
     private String mPictureUUID;
+    private MessageSummary messageSummary;
     private SharedPreferences mSharedPreferences;
 
     private OfferedRoute mSelectedRoute;
     private static final String PASSED_BUNDLE = "passed bundle";
     private static final String SELECTED_ROUTE = "selectedRoute";
-    private static final String CHOSEN_USER_ID = "chosen user ID";
-    private static final String CHOSEN_USER_ID_PASSED = "chosen user ID passed";
+    private static final String CONVO_PUSH_KEY = "convo_push_key";
     private static final String NO_ENTRY = "empty";
 
 
@@ -85,9 +93,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
-
-            //TODO: when opened from Search Splash, back mainscreen_button should lead back to the search list fragment
-        }
+            }
 
         //get userID and photo UUID from shared preferences
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -95,8 +101,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         Bundle routeBundle = getIntent().getBundleExtra(PASSED_BUNDLE);
         if (routeBundle != null) {
             mSelectedRoute = routeBundle.getParcelable(SELECTED_ROUTE);
+            //if this activity was started from a search result, the userID used to create this activity
+            //is that of the person who has offered the route
             mSharedPrefUserID = mSelectedRoute.getUserID();
-            enableMessageButton();
+            enableMessageButton(mSharedPrefUserID);
         } else {
             mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
                     "unsuccessful");
@@ -104,13 +112,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         //get reference to user's section of database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
-
+        mUsersDatabaseRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
         mFirebaseStorage = FirebaseStorage.getInstance();
         mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
-
         //download all other values
-        mRef.addValueEventListener(profileDataListener);
+        mUsersDatabaseRef.addValueEventListener(profileDataListener);
+        messageSummary = new MessageSummary("","","");
     }
 
     @Override
@@ -146,15 +153,111 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO: for signing in and out, two different users
-        //get userID and photo UUID from shared preferences
-        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
-                "unsuccessful");
-
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID), "unsuccessful");
         //download all other values
-        mRef.addValueEventListener(profileDataListener);
+        mUsersDatabaseRef.addValueEventListener(profileDataListener);
     }
 
+
+    private void downloadImage(String pictureUUID) {
+        //download the saved image
+        StorageReference downloadRef = mStorageReference.child(pictureUUID);
+        // Load the image using Glide
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(downloadRef)
+                .placeholder(R.drawable.ic_add_a_photo)
+                .transform(new CircularImageTransform(ViewProfileActivity.this))
+                .into(profileImageView);
+    }
+
+
+    private void enableMessageButton(final String buddyUserID) {
+        //if another user's profile is being viewed, enable the send button
+        messageButton.setVisibility(View.VISIBLE);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //create new conversation and get pushKey
+                String newConvoPushKey = createNewConversation(buddyUserID);
+                //send pushKey to Convo fragment, via the MainActivity
+                Intent backToMainIntent = new Intent(ViewProfileActivity.this, MainActivity.class);
+                backToMainIntent.putExtra(CONVO_PUSH_KEY, newConvoPushKey);
+                startActivity(backToMainIntent);
+            }
+        });
+    }
+
+    private String createNewConversation(String buddyID){
+        final String currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference convoRef = mFirebaseDatabase.getReference("Conversations");
+        final DatabaseReference messageRef = mFirebaseDatabase.getReference("Messages");
+        final DatabaseReference pushRef = convoRef.push();
+        final String pushKey = pushRef.getKey();
+
+        //add message Summary to the conversations branch of the database, using unique pushID
+        messageSummary.setConvoUID(pushKey);
+        messageSummary.setBuddyOneID(currentUserID);
+        messageSummary.setBuddyTwoID(buddyID);
+        HashMap<String, Object> convoItemMap = new HashMap<String, Object>();
+        HashMap<String,Object> convoObject = (HashMap<String, Object>) new ObjectMapper()
+                .convertValue(messageSummary, Map.class);
+        convoItemMap.put("/" + pushKey, convoObject);
+        convoRef.updateChildren(convoItemMap);
+
+        //also send this hashmap to the current user's profile section of the database
+        convoItemMap = new HashMap<String, Object>();
+        convoItemMap.put("/chats/" + pushKey, convoObject);
+        final DatabaseReference mCurrentUserRef = mFirebaseDatabase.getReference("Users").child(currentUserID);
+        final DatabaseReference mBuddyRef = mFirebaseDatabase.getReference("Users").child(buddyID);
+        mCurrentUserRef.updateChildren(convoItemMap);
+        mBuddyRef.updateChildren(convoItemMap);
+
+        //create a new branch within the messages branch of the database, using unique pushID
+        Message emptyMessage =
+                new Message(currentUserID, "Hello there", "");
+        final DatabaseReference newSetOfMessagesRef =
+                mFirebaseDatabase.getReference("Messages" + "/" + pushKey);
+        final DatabaseReference msgPush = newSetOfMessagesRef.push();
+        final String msgPushKey = msgPush.getKey();
+        newSetOfMessagesRef.child(msgPushKey).setValue(emptyMessage);
+
+        return pushKey;
+    }
+
+    private String getSummaryText(String dbString) {
+        if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
+            return getResources().getString(R.string.vp_want_cycle_buddy);
+        } else if (dbString.equals(getResources().getString(R.string.need_a_buddy))) {
+            return getResources().getString(R.string.vp_need_cycle_buddy);
+        } else if (dbString.equals(getResources().getString(R.string.both))) {
+            return getResources().getString(R.string.vp_both_want_need);
+        } else if (dbString.equals(getResources().getString(R.string.never))) {
+            return getResources().getString(R.string.vp_never_cycled_in_london);
+        } else if (dbString.equals(getResources().getString(R.string.less_than_year))) {
+            return getResources().getString(R.string.vp_cycling_less_than_year);
+        } else if (dbString.equals(getResources().getString(R.string.year_or_so))) {
+            return getResources().getString(R.string.vp_cycling_year_or_so);
+        } else if (dbString.equals(getResources().getString(R.string.few_years))) {
+            return getResources().getString(R.string.vp_cycling_few_years);
+        } else if (dbString.equals(getResources().getString(R.string.very_long))) {
+            return getResources().getString(R.string.vp_cycling_long_time);
+        } else if (dbString.equals(getResources().getString(R.string.everyday))) {
+            return getResources().getString(R.string.vp_everyday);
+        } else if (dbString.equals(getResources().getString(R.string.several_days))) {
+            return getResources().getString(R.string.vp_several_days);
+        } else if (dbString.equals(getResources().getString(R.string.once_week))) {
+            return getResources().getString(R.string.vp_once_week);
+        } else if (dbString.equals(getResources().getString(R.string.once_month))) {
+            return getResources().getString(R.string.vp_once_month);
+        } else if (dbString.equals(getResources().getString(R.string.seldom_cycle))) {
+            return getResources().getString(R.string.vp_seldom_cycle);
+        } else {
+            return NO_ENTRY;
+        }
+    }
+
+    //method for setting up UI based on userProfile information
     ValueEventListener profileDataListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -187,71 +290,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                     mPictureUUID = mUserProfile.getPhotoUrl();
                     downloadImage(mPictureUUID);
                 }
-        }}
+            }}
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
 
         }
     };
-
-    private void downloadImage(String pictureUUID) {
-        //download the saved image
-        StorageReference downloadRef = mStorageReference.child(pictureUUID);
-        // Load the image using Glide
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(downloadRef)
-                .placeholder(R.drawable.ic_add_a_photo)
-                .transform(new CircularImageTransform(ViewProfileActivity.this))
-                .into(profileImageView);
-    }
-
-
-    public void enableMessageButton() {
-        messageButton.setVisibility(View.VISIBLE);
-        messageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent backToMainIntent = new Intent(ViewProfileActivity.this, MainActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(CHOSEN_USER_ID, mSharedPrefUserID);
-                backToMainIntent.putExtra(CHOSEN_USER_ID, bundle);
-                startActivity(backToMainIntent);
-            }
-        });
-    }
-
-    public String getSummaryText(String dbString) {
-
-        if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
-            return getResources().getString(R.string.vp_want_cycle_buddy);
-        } else if (dbString.equals(getResources().getString(R.string.need_a_buddy))) {
-            return getResources().getString(R.string.vp_need_cycle_buddy);
-        } else if (dbString.equals(getResources().getString(R.string.both))) {
-            return getResources().getString(R.string.vp_both_want_need);
-        } else if (dbString.equals(getResources().getString(R.string.never))) {
-            return getResources().getString(R.string.vp_never_cycled_in_london);
-        } else if (dbString.equals(getResources().getString(R.string.less_than_year))) {
-            return getResources().getString(R.string.vp_cycling_less_than_year);
-        } else if (dbString.equals(getResources().getString(R.string.year_or_so))) {
-            return getResources().getString(R.string.vp_cycling_year_or_so);
-        } else if (dbString.equals(getResources().getString(R.string.few_years))) {
-            return getResources().getString(R.string.vp_cycling_few_years);
-        } else if (dbString.equals(getResources().getString(R.string.very_long))) {
-            return getResources().getString(R.string.vp_cycling_long_time);
-        } else if (dbString.equals(getResources().getString(R.string.everyday))) {
-            return getResources().getString(R.string.vp_everyday);
-        } else if (dbString.equals(getResources().getString(R.string.several_days))) {
-            return getResources().getString(R.string.vp_several_days);
-        } else if (dbString.equals(getResources().getString(R.string.once_week))) {
-            return getResources().getString(R.string.vp_once_week);
-        } else if (dbString.equals(getResources().getString(R.string.once_month))) {
-            return getResources().getString(R.string.vp_once_month);
-        } else if (dbString.equals(getResources().getString(R.string.seldom_cycle))) {
-            return getResources().getString(R.string.vp_seldom_cycle);
-        } else {
-            return NO_ENTRY;
-        }
-    }
 }
