@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,18 +27,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.UserProfile;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,9 +49,9 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -55,8 +59,6 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class EditProfileActivity extends AppCompatActivity {
-
-    //TODO: either open with a Uri (editing existing profile), or no Uri (new profile)
 
     private static final int PICK_IMAGE = 1;
     @BindView(R.id.edit_profile_toolbar)
@@ -77,6 +79,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText bioEditText;
 
     private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mUserDatabaseReference;
     private DatabaseReference mProfileDatabaseReference;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mStorageReference;
@@ -124,8 +127,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 "unsuccessful");
 
         //get reference to this user's part of the database
-        mProfileDatabaseReference = mFirebaseDatabase.getReference().child("Users").child(mSharedPrefUserID);
-        mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
+        mUserDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
+        mProfileDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH).child(mSharedPrefUserID);
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
 
         //download existing values
         mProfileDatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -169,17 +173,20 @@ public class EditProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserProfile newUser;
                 mName = nameEditText.getText().toString();
                 mMiniBio = bioEditText.getText().toString();
-                if (mPictureUUID == null || mPictureUUID.isEmpty()) {
-                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
-                            mCyclingFrequency, mMiniBio);
-                } else {
-                    newUser = new UserProfile(mSharedPrefUserID, mName, mBuddyType, mYearsCycling,
-                            mCyclingFrequency, mMiniBio, mPictureUUID);
-                }
-                mProfileDatabaseReference.setValue(newUser);
+
+                HashMap<String, Object> newUserMap = new HashMap<>();
+                newUserMap.put("userID", mSharedPrefUserID);
+                newUserMap.put("user", mName);
+                newUserMap.put("buddyType", mBuddyType);
+                newUserMap.put("yearsCycling", mYearsCycling);
+                newUserMap.put("cyclingFrequency", mCyclingFrequency);
+                newUserMap.put("miniBio", mMiniBio);
+                newUserMap.put("photoUrl", mPictureUUID);
+
+                mProfileDatabaseReference.updateChildren(newUserMap);
+
                 finish();
             }
         });
@@ -196,11 +203,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //TODO: could remove?
         mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
                 "unsuccessful");
-
     }
 
     @Override
@@ -262,26 +266,27 @@ public class EditProfileActivity extends AppCompatActivity {
     private void uploadImage() {
         if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle(getResources().getString(R.string.uploading));
             progressDialog.show();
 
             mPictureUUID = UUID.randomUUID().toString();
 
             StorageReference ref = mStorageReference.child(mPictureUUID);
-            //TODO: delete previous photos
             ref.putFile(selectedImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(EditProfileActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, getResources().getString(R.string.uploaded),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(EditProfileActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, getResources().getString(R.string.failed) + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -289,7 +294,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                            progressDialog.setMessage(getResources().getString(R.string.uploaded) + (int) progress + "%");
                         }
                     });
         }
@@ -301,7 +306,7 @@ public class EditProfileActivity extends AppCompatActivity {
         StorageReference downloadRef = mStorageReference.child(pictureUUID);
 
         // Load the image using Glide
-        Glide.with(this)
+        Glide.with(getApplicationContext())
                 .using(new FirebaseImageLoader())
                 .load(downloadRef)
                 .transform(new CircularImageTransform(EditProfileActivity.this))
@@ -444,7 +449,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: is continue editing button responding?
     //unsaved changes dialogue, to sometimes be used when back mainscreen_button is pressed
     private void showUnsavedChangesDialog(
             DialogInterface.OnClickListener discardButtonClickListener) {
@@ -482,11 +486,12 @@ public class EditProfileActivity extends AppCompatActivity {
         } else if (spinnerString.equals(getResources().getString(R.string.few_years)) ||
                 spinnerString.equals(getResources().getString(R.string.once_month))) {
             return 4;
-        } else if (spinnerString.equals(getResources().getString(R.string.very_long))||
+        } else if (spinnerString.equals(getResources().getString(R.string.very_long)) ||
                 spinnerString.equals(getResources().getString(R.string.seldom_cycle))) {
             return 5;
         } else {
             return 0;
         }
     }
+
 }

@@ -116,7 +116,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     //create custom viewholder
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.small_image_view_messages_rv)
+        @BindView(R.id.small_image_view_messages)
         ImageView imageViewRv;
         @BindView(R.id.contact_username)
         TextView contactUsernameTv;

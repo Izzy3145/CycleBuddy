@@ -11,7 +11,7 @@
         android:id="@+id/messages_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_border"
+        android:layout_marginBottom="@dimen/large_border"
         android:layout_marginEnd="@dimen/large_border"
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/large_border"
@@ -21,14 +21,14 @@
         android:textSize="@dimen/title_text"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/messages_overview_recycler_view"
+    <ListView
+        android:id="@+id/messages_overview_list_view"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/rv_messages_empty_view"
+        android:id="@+id/lv_messages_empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

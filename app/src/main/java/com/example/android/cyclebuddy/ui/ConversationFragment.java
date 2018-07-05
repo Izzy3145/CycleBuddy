@@ -1,7 +1,6 @@
 package com.example.android.cyclebuddy.ui;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -19,8 +18,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.R;
-import com.example.android.cyclebuddy.ViewProfileActivity;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.Message;
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,18 +54,14 @@ public class ConversationFragment extends android.app.Fragment implements View.O
     @BindView(R.id.send_message)
     Button mSendButton;
 
-    private FirebaseListAdapter<Message> mMessageListAdapter;
-
     private String currentUserID;
-    private String conversationBuddyID;
     private String pictureUUID;
     private String convoPushID;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mStorageReference;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mConversationDBReference;
     private DatabaseReference mMessagesDBReference;
-    private ChildEventListener mChildEventListener;
+    private FirebaseListAdapter<Message> mMessageListAdapter;
 
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
     private static final String CONVERSATION_UID = "conversation UID";
@@ -84,16 +79,14 @@ public class ConversationFragment extends android.app.Fragment implements View.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mConversationDBReference = mFirebaseDatabase.getReference().child("Conversations");
-
         if (getArguments() != null) {
             convoPushID = getArguments().getString(CONVERSATION_UID);
         }
-        mMessagesDBReference = mFirebaseDatabase.getReference().child("Messages"+ "/" + convoPushID);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mMessagesDBReference = mFirebaseDatabase.getReference().child(Constants.MESSAGES_PATH).child(convoPushID);
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference().child("images");
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH);
     }
 
     @Override
@@ -105,7 +98,6 @@ public class ConversationFragment extends android.app.Fragment implements View.O
         mSendButton.setOnClickListener(this);
         addListeners();
         showMessages();
-
         return view;
     }
 
@@ -114,25 +106,7 @@ public class ConversationFragment extends android.app.Fragment implements View.O
         sendMessage();
     }
 
-//    private void getUserInfo(String userID){
-//        final DatabaseReference usersDBReference = mFirebaseDatabase.getReference().child("Users").child(userID);
-//        final String user;
-//        usersDBReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-//                user = userProfile.getUser();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-
-    private void sendMessage(){
+    private void sendMessage() {
         final DatabaseReference pushRef = mMessagesDBReference.push();
         final String pushKey = pushRef.getKey();
 
@@ -142,11 +116,12 @@ public class ConversationFragment extends android.app.Fragment implements View.O
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Date date = new Date();
         String timestamp = dateFormat.format(date);
+
         Message message = new Message(currentUserID, sentMessage, timestamp);
 
-        //put message object through HashMap for adding to Messages section of database
+        //put message object through HashMap and add to Messages section of database
         HashMap<String, Object> messageItemMap = new HashMap<String, Object>();
-        HashMap<String,Object> messageObject = (HashMap<String, Object>) new ObjectMapper()
+        HashMap<String, Object> messageObject = (HashMap<String, Object>) new ObjectMapper()
                 .convertValue(message, Map.class);
         messageItemMap.put("/" + pushKey, messageObject);
         mMessagesDBReference.updateChildren(messageItemMap)
@@ -159,11 +134,11 @@ public class ConversationFragment extends android.app.Fragment implements View.O
     }
 
     private void showMessages() {
-
+        //set up adapter to display list of messages from database
         mMessageListAdapter = new FirebaseListAdapter<Message>(getActivity(), Message.class,
                 R.layout.message_item, mMessagesDBReference) {
             @Override
-            protected void populateView(View v, Message message, int position) {
+            protected void populateView(View v, final Message message, final int position) {
                 LinearLayout messageBubble = (LinearLayout) v.findViewById(R.id.message_bubble);
                 final TextView userTv = (TextView) v.findViewById(R.id.user_sender);
                 TextView messageTv = (TextView) v.findViewById(R.id.message_content);
@@ -171,10 +146,12 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                 final ImageView rightImage = (ImageView) v.findViewById(R.id.rightMessagePic);
                 LinearLayout userAndMessage = (LinearLayout) v.findViewById(R.id.user_and_message);
 
+                //set message and other profile information to view
                 messageTv.setText(message.getMessage());
                 final String messageUserID = message.getUserID();
-
-                DatabaseReference userDbRef = mFirebaseDatabase.getReference().child("Users").child(messageUserID);
+                //get other profile information
+                DatabaseReference userDbRef = mFirebaseDatabase.getReference().child(Constants.USERS_PATH)
+                        .child(messageUserID);
                 userDbRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -207,7 +184,7 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                     }
                 });
 
-
+                //set up UI according to who the sender was
                 if (messageUserID.equals(currentUserID)) {
                     messageBubble.setGravity(Gravity.RIGHT);
                     leftImage.setVisibility(View.GONE);
@@ -227,7 +204,7 @@ public class ConversationFragment extends android.app.Fragment implements View.O
         mListView.setAdapter(mMessageListAdapter);
     }
 
-    private void addListeners(){
+    private void addListeners() {
         // Enable Send button when there's text to send
         mMessageEditText.addTextChangedListener(new TextWatcher() {
             @Override

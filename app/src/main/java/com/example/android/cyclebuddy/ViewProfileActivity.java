@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.Message;
 import com.example.android.cyclebuddy.model.MessageSummary;
 import com.example.android.cyclebuddy.model.OfferedRoute;
@@ -86,6 +87,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(Html.fromHtml("<font color='#FFFFFF'> View Profile </font>"));
         setContentView(R.layout.activity_view_profile);
         ButterKnife.bind(this);
 
@@ -98,6 +100,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         //get userID and photo UUID from shared preferences
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        //get intents
         Bundle routeBundle = getIntent().getBundleExtra(PASSED_BUNDLE);
         if (routeBundle != null) {
             mSelectedRoute = routeBundle.getParcelable(SELECTED_ROUTE);
@@ -110,14 +113,15 @@ public class ViewProfileActivity extends AppCompatActivity {
                     "unsuccessful");
         }
 
-        //get reference to user's section of database
+        //initialise member variables
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mUsersDatabaseRef = mFirebaseDatabase.getReference("Users").child(mSharedPrefUserID);
+        mUsersDatabaseRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(mSharedPrefUserID);
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference().child("images").child(mSharedPrefUserID);
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
+        messageSummary = new MessageSummary("","","");
+
         //download all other values
         mUsersDatabaseRef.addValueEventListener(profileDataListener);
-        messageSummary = new MessageSummary("","","");
     }
 
     @Override
@@ -158,7 +162,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         mUsersDatabaseRef.addValueEventListener(profileDataListener);
     }
 
-
     private void downloadImage(String pictureUUID) {
         //download the saved image
         StorageReference downloadRef = mStorageReference.child(pictureUUID);
@@ -170,7 +173,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .transform(new CircularImageTransform(ViewProfileActivity.this))
                 .into(profileImageView);
     }
-
 
     private void enableMessageButton(final String buddyUserID) {
         //if another user's profile is being viewed, enable the send button
@@ -190,8 +192,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private String createNewConversation(String buddyID){
         final String currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference convoRef = mFirebaseDatabase.getReference("Conversations");
-        final DatabaseReference messageRef = mFirebaseDatabase.getReference("Messages");
+        final DatabaseReference convoRef = mFirebaseDatabase.getReference(Constants.CONVERSATIONS_PATH);
         final DatabaseReference pushRef = convoRef.push();
         final String pushKey = pushRef.getKey();
 
@@ -208,16 +209,15 @@ public class ViewProfileActivity extends AppCompatActivity {
         //also send this hashmap to the current user's profile section of the database
         convoItemMap = new HashMap<String, Object>();
         convoItemMap.put("/chats/" + pushKey, convoObject);
-        final DatabaseReference mCurrentUserRef = mFirebaseDatabase.getReference("Users").child(currentUserID);
-        final DatabaseReference mBuddyRef = mFirebaseDatabase.getReference("Users").child(buddyID);
+        final DatabaseReference mCurrentUserRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(currentUserID);
+        final DatabaseReference mBuddyRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(buddyID);
         mCurrentUserRef.updateChildren(convoItemMap);
         mBuddyRef.updateChildren(convoItemMap);
 
         //create a new branch within the messages branch of the database, using unique pushID
-        Message emptyMessage =
-                new Message(currentUserID, "Hello there", "");
-        final DatabaseReference newSetOfMessagesRef =
-                mFirebaseDatabase.getReference("Messages" + "/" + pushKey);
+        Message emptyMessage = new Message(currentUserID, "Hey Buddy", "");
+        final DatabaseReference newSetOfMessagesRef = mFirebaseDatabase.getReference()
+                .child(Constants.MESSAGES_PATH).child(pushKey);
         final DatabaseReference msgPush = newSetOfMessagesRef.push();
         final String msgPushKey = msgPush.getKey();
         newSetOfMessagesRef.child(msgPushKey).setValue(emptyMessage);
@@ -281,9 +281,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 } else {
                     cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
                 }
-
                 miniBioTv.setText(mUserProfile.getMiniBio());
-
                 if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
                     Timber.v("No photo saved yet");
                 } else {
@@ -294,7 +292,6 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-
         }
     };
 }

@@ -9,7 +9,11 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
+    android:nextFocusUp="@id/search_from_edit_text"
+    android:nextFocusDown="@id/search_from_edit_text"
     tools:context=".ui.SearchFragment">
 
     <TextView
@@ -57,6 +61,7 @@
         android:layout_marginEnd="@dimen/medium_border"
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/small_border"
+        android:nextFocusDown="@id/search_to_edit_text"
         android:textSize="@dimen/small_text"/>
 
     <TextView
@@ -80,6 +85,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/small_border"
+        android:nextFocusDown="@id/sf_search_button"
         android:textSize="@dimen/small_text" />
 
     <Button

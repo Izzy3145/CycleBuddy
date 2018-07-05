@@ -22,25 +22,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
 import com.example.android.cyclebuddy.helpers.CustomTypefaceSpan;
-import com.example.android.cyclebuddy.model.Buddies;
-import com.example.android.cyclebuddy.model.Message;
-import com.example.android.cyclebuddy.model.MessageSummary;
 import com.example.android.cyclebuddy.ui.ConversationFragment;
 import com.example.android.cyclebuddy.ui.MessageListFragment;
 import com.example.android.cyclebuddy.ui.OfferFragment;
 import com.example.android.cyclebuddy.ui.RideFragment;
 import com.example.android.cyclebuddy.ui.SearchFragment;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.Arrays;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,20 +45,16 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     Toolbar mainToolbar;
 
     private FragmentManager fragmentManager;
-    private Bundle mReceivedExtras;
-
     private String mUsername;
     private String userID;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseUser mFirebaseUser;
-
 
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
     private static final String CONVO_PUSH_KEY = "convo_push_key";
     private static final String CONVERSATION_UID = "conversation UID";
-
+    private final static String WIDGET_ICON = "widget icon";
 
 
     @Override
@@ -73,17 +62,9 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
 
-        //set up actionbar
-        setSupportActionBar(mainToolbar);
-        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
-        //set action bar title with custom font
-        Typeface titleFont = Typeface.createFromAsset(getAssets(), "RobotoRegular.ttf");
-        SpannableStringBuilder SS = new SpannableStringBuilder("Cycle Buddy");
-        SS.setSpan(new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        //SS.setSpan(new AbsoluteSizeSpan(75), 0, SS.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        getSupportActionBar().setTitle(SS);
+        setUpActionBar();
 
         //set up Bottom Navigation
         BottomNavigationHelper.removeShiftMode(navigation);
@@ -127,24 +108,40 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
             }
         };
 
+        Fragment fragmentToOpen = null;
         if (getIntent().getExtras() != null) {
-            String convoPushID = getIntent().getStringExtra(CONVO_PUSH_KEY);
-            ConversationFragment cf = ConversationFragment.newInstance();
-            Bundle bundle = new Bundle();
-            bundle.putString(CONVERSATION_UID, convoPushID);
-            cf.setArguments(bundle);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, cf);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, RideFragment.newInstance());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-        //userIDtoSharedPreferences();
 
+            if (getIntent().getStringExtra(CONVO_PUSH_KEY) != null) {
+                String convoPushID = getIntent().getStringExtra(CONVO_PUSH_KEY);
+                ConversationFragment cf = ConversationFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString(CONVERSATION_UID, convoPushID);
+                cf.setArguments(bundle);
+                fragmentToOpen = cf;
+
+            } else if(getIntent().getIntExtra(WIDGET_ICON, 0) != 0) {
+                int widgetIconPressed = getIntent().getIntExtra(WIDGET_ICON, 0);
+                switch (widgetIconPressed) {
+                    case 1:
+                        fragmentToOpen = SearchFragment.newInstance();
+                        break;
+                    case 2:
+                        fragmentToOpen = OfferFragment.newInstance();
+                        break;
+                    case 3:
+                        fragmentToOpen = MessageListFragment.newInstance();
+                        break;
+                }
+            }
+
+        } else {
+            fragmentToOpen = RideFragment.newInstance();
+        }
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragmentToOpen);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -169,28 +166,19 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     @Override
     protected void onResume() {
         super.onResume();
-        //userIDtoSharedPreferences();
-        mAuth.addAuthStateListener(mAuthStateListener);
+        if(mAuthStateListener!= null) {
+            mAuth.addAuthStateListener(mAuthStateListener);
+        }
+        fragmentManager = getFragmentManager();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mAuth.removeAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
-
-
-//    public void userIDtoSharedPreferences() {
-//        //save UserID in sharedPreferences for use across the app
-//        mFirebaseUser = mAuth.getCurrentUser();
-//        if (mFirebaseUser != null) {
-//
-//
-//            Timber.v(userID);
-//        } else {
-//            Timber.v(userID);
-//        }
-//    }
 
     //set up BottomNavigation listener to inflate the necessary fragment
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -225,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     public void changeHighlightedIcon(int menuItemId) {
         View view = navigation.findViewById(menuItemId);
         view.performClick();
-        //TODO: when pressing back, make sure the correct icon is highlighted
     }
 
     //get result from Authentication UI
@@ -234,13 +221,25 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.signed_in),
+                        Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Sign in cancelled.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.sign_in_cancelled),
+                        Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
     }
 
+    private void setUpActionBar(){
+        setSupportActionBar(mainToolbar);
+        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
+        //set action bar title with custom font
+        Typeface titleFont = Typeface.createFromAsset(getAssets(), getResources().getString(R.string.roboto_regular));
+        SpannableStringBuilder SS = new SpannableStringBuilder(getResources().getString(R.string.cycle_buddy));
+        SS.setSpan(new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        getSupportActionBar().setTitle(SS);
+    }
 }
 

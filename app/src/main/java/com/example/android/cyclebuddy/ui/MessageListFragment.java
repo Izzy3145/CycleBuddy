@@ -1,21 +1,37 @@
 package com.example.android.cyclebuddy.ui;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.R;
-import com.example.android.cyclebuddy.adapters.MessageListAdapter;
+import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.helpers.Constants;
+import com.example.android.cyclebuddy.model.Message;
 import com.example.android.cyclebuddy.model.MessageSummary;
-import java.util.ArrayList;
+import com.example.android.cyclebuddy.model.UserProfile;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,29 +45,22 @@ import butterknife.ButterKnife;
  * Use the {@link MessageListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MessageListFragment extends Fragment implements
-        MessageListAdapter.MessageListAdapterListener{
+public class MessageListFragment extends Fragment {
 
-    @BindView(R.id.messages_overview_recycler_view)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.rv_messages_empty_view)
+    @BindView(R.id.messages_overview_list_view)
+    ListView mListView;
+    @BindView(R.id.lv_messages_empty_view)
     TextView mEmptyView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private MessageListAdapter mAdapter;
-    private ArrayList<MessageSummary> messageList;
     private FragmentManager fm;
-
-
-    //TODO: connect this to the database, make this a list fragment, implementing onClickListener
-    //TODO: and leading to message detail depending on userID
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    private String mParam1;
-//    private String mParam2;
-
-    //private OnFragmentInteractionListener mListener;
+    private FirebaseStorage mFirebaseStorage;
+    private StorageReference mStorageReference;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mChatDbReference;
+    private DatabaseReference mUserDbReference;
+    private FirebaseListAdapter mMessageSummaryAdapter;
+    private String currentUserID;
+    private static final String CONVERSATION_UID = "conversation UID";
 
     public MessageListFragment() {
         // Required empty public constructor
@@ -62,24 +71,16 @@ public class MessageListFragment extends Fragment implements
         return fragment;
     }
 
-
-//    // TODO: Put list of historical MessageSummary objects in here
-//    public static MessageListFragment newInstance(String param1, String param2) {
-//        MessageListFragment fragment = new MessageListFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fm = getActivity().getFragmentManager();
-        MessageSummary onlyMessageSummary = new MessageSummary("", "Izzy","Danny");
-        messageList = new ArrayList<MessageSummary>();
-        messageList.add(onlyMessageSummary);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        currentUserID = mFirebaseAuth.getCurrentUser().getUid();
+        mUserDbReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH);
     }
 
     @Override
@@ -88,71 +89,121 @@ public class MessageListFragment extends Fragment implements
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
-        ButterKnife.bind(this,view);
-
-        //set up recyclerView
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this.getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        if(messageList == null || messageList.size() == 0){
-            mEmptyView.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-            mAdapter = new MessageListAdapter(getContext(), messageList, this);
-            mRecyclerView.setAdapter(mAdapter);
-        }
+        ButterKnife.bind(this, view);
+        loadExistingConversations(currentUserID);
         return view;
     }
 
-    @Override
-    public void onClickMethod(ArrayList<MessageSummary> dataset, int position) {
-        android.app.Fragment convoFragment = ConversationFragment.newInstance();
-        FragmentTransaction fragmentTransaction=fm.beginTransaction();
-        //ssFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragment_container, convoFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-/*
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+    private void loadExistingConversations(String currentUser) {
+        mChatDbReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH).child(currentUser)
+        .child(Constants.CHATS_PATH);
+        DatabaseReference currentUserDb = mUserDbReference.child(currentUser);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+        //set up the adapter to display list of message summary objects
+        mMessageSummaryAdapter = new FirebaseListAdapter<MessageSummary>(getActivity(),
+                MessageSummary.class, R.layout.message_list_item, mChatDbReference) {
+            @Override
+            protected void populateView(View v, MessageSummary msgSummary, int position) {
+                final ImageView buddyImage = (ImageView) v.findViewById(R.id.small_image_view_messages);
+                final TextView buddyName = (TextView) v.findViewById(R.id.contact_username);
+                final TextView lastMessage = (TextView) v.findViewById(R.id.most_recent_message);
+                //TextView lastTimestamp = (TextView) v.findViewById(R.id.last_message_time);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+                String buddyOne = msgSummary.getbuddyOneID();
+                String buddyTwo = msgSummary.getbuddyTwoID();
+                //get and set username and buddy Photo
+                if(buddyOne.equals(currentUserID)){
+                    final StorageReference userRef = mStorageReference.child(buddyTwo);
+                    mUserDbReference.child(buddyTwo).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                            String buddyUsername = userProfile.getUser();
+                            buddyName.setText(buddyUsername);
+                            String pictureUUID = userProfile.getPhotoUrl();
 
-    *//**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     *//*
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
+                            //download the saved image
+                            StorageReference downloadRef = userRef.child(pictureUUID);
+                            // Load the image using Glide
+                            Glide.with(getContext())
+                                    .using(new FirebaseImageLoader())
+                                    .load(downloadRef)
+                                    .transform(new CircularImageTransform(getContext()))
+                                    .into(buddyImage);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                } else {
+                    final StorageReference userRef = mStorageReference.child(buddyOne);
+                    mUserDbReference.child(buddyTwo).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                            String buddyUsername = userProfile.getUser();
+                            buddyName.setText(buddyUsername);
+                            String pictureUUID = userProfile.getPhotoUrl();
+
+                            //download the saved image
+                            StorageReference downloadRef = userRef.child(pictureUUID);
+                            // Load the image using Glide
+                            Glide.with(getContext())
+                                    .using(new FirebaseImageLoader())
+                                    .load(downloadRef)
+                                    .transform(new CircularImageTransform(getContext()))
+                                    .into(buddyImage);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+
+                //set up listener on messages database, and set last message to tv
+                final DatabaseReference messageDbRef = mFirebaseDatabase.getReference().child(Constants.MESSAGES_PATH)
+                        .child(msgSummary.getConvoUID());
+                messageDbRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Message newMessage = dataSnapshot.getValue(Message.class);
+                        lastMessage.setText(newMessage.getMessage());
+                    }
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    }
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
+        };
+        mListView.setAdapter(mMessageSummaryAdapter);
+
+        //upon clicking item, send convo pushKey to conversation fragment
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String messageLocation = mMessageSummaryAdapter.getRef(position).getKey();
+
+                if (messageLocation != null) {
+                    String convoPushID = mMessageSummaryAdapter.getRef(position).getKey();
+                    ConversationFragment cf = ConversationFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CONVERSATION_UID, convoPushID);
+                    cf.setArguments(bundle);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, cf);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            }
+        });
+    }
 }

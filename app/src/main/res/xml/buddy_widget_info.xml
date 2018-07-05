@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialKeyguardLayout="@layout/buddy_widget"
+    android:initialLayout="@layout/buddy_widget"
+    android:minHeight="56dp"
+    android:minWidth="168dp"
+    android:previewImage="@mipmap/ic_cb_icon_tsp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen"></appwidget-provider>

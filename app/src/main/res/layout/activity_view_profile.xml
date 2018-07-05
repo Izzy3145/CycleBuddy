@@ -97,32 +97,6 @@
         android:layout_marginEnd="@dimen/large_border"
         android:layout_marginBottom="@dimen/medium_border"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
-        android:layout_marginTop="@dimen/medium_border"
-        android:layout_marginBottom="@dimen/medium_border"/>
-
-    <TextView
-        android:id="@+id/reviews_text_view_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/medium_border"
-        android:textSize="@dimen/large_text"
-        android:textColor="@color/primary_text"
-        android:text="@string/reviews"/>
-
-    <TextView
-        android:id="@+id/reviews_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_border"
-        android:layout_marginEnd="@dimen/large_border"
-        android:textColor="@color/primary_text"
-        android:layout_marginStart="@dimen/large_border" />
-
     <Button
         android:id="@+id/message_button"
         android:layout_width="wrap_content"
@@ -133,16 +107,5 @@
         android:textColor="@color/white"
         android:background="@drawable/normal_button"
         style="@style/buttonStyle" />
-
-    <Button
-        android:id="@+id/review_button"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/button_height"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/normal_button"
-        android:text="@string/message_button"
-        android:textColor="@color/white"
-        style="@style/buttonStyle"
-        android:visibility="gone"/>
 
 </LinearLayout>
