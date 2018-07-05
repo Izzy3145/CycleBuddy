@@ -118,17 +118,21 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 bundle.putString(CONVERSATION_UID, convoPushID);
                 cf.setArguments(bundle);
                 fragmentToOpen = cf;
+                navigation.setSelectedItemId(R.id.navigation_messages);
 
             } else if(getIntent().getIntExtra(WIDGET_ICON, 0) != 0) {
                 int widgetIconPressed = getIntent().getIntExtra(WIDGET_ICON, 0);
                 switch (widgetIconPressed) {
                     case 1:
+                        navigation.setSelectedItemId(R.id.navigation_search);
                         fragmentToOpen = SearchFragment.newInstance();
                         break;
                     case 2:
+                        navigation.setSelectedItemId(R.id.navigation_offer);
                         fragmentToOpen = OfferFragment.newInstance();
                         break;
                     case 3:
+                        navigation.setSelectedItemId(R.id.navigation_messages);
                         fragmentToOpen = MessageListFragment.newInstance();
                         break;
                 }

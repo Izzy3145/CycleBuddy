@@ -1,15 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:layout_height="@dimen/widget_height"
+    android:background="@drawable/widget_background"
     android:orientation="horizontal"
-    android:padding="@dimen/widget_margin">
+    android:layout_margin="@dimen/widget_margin">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:background="@drawable/widget_inner_background">
 
     <LinearLayout
         android:id="@+id/widget_search"
         android:layout_width="@dimen/widget_button_size"
         android:layout_height="@dimen/widget_button_size"
-        android:background="@color/icons"
         android:orientation="vertical">
 
         <ImageView
@@ -17,7 +23,8 @@
             android:layout_height="@dimen/widget_image_size"
             android:contentDescription="@string/search"
             android:layout_gravity="center"
-            android:tint="@color/colorPrimary"
+            android:tint="@color/primary_text"
+            android:background="@color/icons"
             android:layout_margin="@dimen/medium_border"
             android:src="@drawable/ic_search_24px" />
 
@@ -27,7 +34,6 @@
         android:id="@+id/widget_offer"
         android:layout_width="@dimen/widget_button_size"
         android:layout_height="@dimen/widget_button_size"
-        android:background="@color/icons"
         android:orientation="vertical">
 
         <ImageView
@@ -35,7 +41,8 @@
             android:layout_height="@dimen/widget_image_size"
             android:contentDescription="@string/search"
             android:layout_gravity="center"
-            android:tint="@color/colorPrimary"
+            android:tint="@color/primary_text"
+            android:background="@color/icons"
             android:layout_margin="@dimen/medium_border"
             android:src="@drawable/ic_smile_24px" />
 
@@ -45,7 +52,6 @@
         android:id="@+id/widget_messages"
         android:layout_width="@dimen/widget_button_size"
         android:layout_height="@dimen/widget_button_size"
-        android:background="@color/icons"
         android:orientation="vertical">
 
         <ImageView
@@ -53,9 +59,12 @@
             android:layout_height="@dimen/widget_image_size"
             android:contentDescription="@string/search"
             android:layout_gravity="center"
-            android:tint="@color/colorPrimary"
+            android:tint="@color/primary_text"
             android:layout_margin="@dimen/medium_border"
+            android:background="@color/icons"
             android:src="@drawable/ic_message_24px" />
+
+    </LinearLayout>
 
     </LinearLayout>
 
