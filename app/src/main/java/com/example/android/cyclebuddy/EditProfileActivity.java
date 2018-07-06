@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,15 +32,14 @@ import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.UserProfile;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,7 +49,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -94,6 +91,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private UserProfile mUserProfile;
     private SharedPreferences mSharedPreferences;
+    private InterstitialAd mInterstitialAd;
+
 
     private boolean mProfileHasChanged = false;
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -117,45 +116,13 @@ public class EditProfileActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        //set up writable database
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseStorage = FirebaseStorage.getInstance();
+        //initialise ad
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        //get the user ID and picture ID from shared preferences
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
-                "unsuccessful");
-
-        //get reference to this user's part of the database
-        mUserDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
-        mProfileDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH).child(mSharedPrefUserID);
-        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
-
-        //download existing values
-        mProfileDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUserProfile = dataSnapshot.getValue(UserProfile.class);
-                //set data to views
-                if (mUserProfile != null) {
-                    nameEditText.setText(mUserProfile.getUser());
-                    buddyTypeSpinner.setSelection(getIndexMethod(mUserProfile.getBuddyType()));
-                    yearsCyclingSpinner.setSelection(getIndexMethod(mUserProfile.getYearsCycling()));
-                    cyclingFrequencySpinner.setSelection(getIndexMethod(mUserProfile.getCyclingFrequency()));
-                    bioEditText.setText(mUserProfile.getMiniBio());
-                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
-                        Timber.v("No photo saved yet");
-                    } else {
-                        mPictureUUID = mUserProfile.getPhotoUrl();
-                        downloadImage(mPictureUUID);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+        initialiseMemberVariables();
+        findExistingValues();
 
         //set up photo intent
         profileImageView.setClickable(true);
@@ -173,6 +140,13 @@ public class EditProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //load ad
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Timber.d("The interstitial wasn't loaded yet.");
+                }
+
                 mName = nameEditText.getText().toString();
                 mMiniBio = bioEditText.getText().toString();
 
@@ -204,7 +178,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
-                "unsuccessful");
+                getResources().getString(R.string.unsuccessful));
     }
 
     @Override
@@ -231,6 +205,7 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //methods relating to images
     private void choosePictureIntent() {
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {
@@ -298,7 +273,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                     });
         }
-
     }
 
     private void downloadImage(String pictureUUID) {
@@ -312,6 +286,46 @@ public class EditProfileActivity extends AppCompatActivity {
                 .transform(new CircularImageTransform(EditProfileActivity.this))
                 .placeholder(R.drawable.ic_add_a_photo)
                 .into(profileImageView);
+    }
+
+    private void initialiseMemberVariables(){
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        //get the user ID and picture ID from shared preferences
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
+                getResources().getString(R.string.unsuccessful));
+        //get reference to this user's part of the database
+        mUserDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
+        mProfileDatabaseReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH).child(mSharedPrefUserID);
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
+    }
+
+    private void findExistingValues(){
+        //download existing values and populate views
+        mProfileDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUserProfile = dataSnapshot.getValue(UserProfile.class);
+                //set data to views
+                if (mUserProfile != null) {
+                    nameEditText.setText(mUserProfile.getUser());
+                    buddyTypeSpinner.setSelection(getIndexMethod(mUserProfile.getBuddyType()));
+                    yearsCyclingSpinner.setSelection(getIndexMethod(mUserProfile.getYearsCycling()));
+                    cyclingFrequencySpinner.setSelection(getIndexMethod(mUserProfile.getCyclingFrequency()));
+                    bioEditText.setText(mUserProfile.getMiniBio());
+                    if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
+                        Timber.v("No photo saved yet");
+                    } else {
+                        mPictureUUID = mUserProfile.getPhotoUrl();
+                        downloadImage(mPictureUUID);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     //set up buddy type spinner
@@ -341,7 +355,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 mBuddyType = getString(R.string.none_selected);
@@ -380,7 +393,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 mYearsCycling = getString(R.string.none_selected);
@@ -388,7 +400,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    //set up years spinner
+    //set up frequency spinner
     private void setupFrequencySpinner() {
         //set up array adapter to take spinner options
         ArrayAdapter yearsSpinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -419,7 +431,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 mYearsCycling = getString(R.string.none_selected);
@@ -443,7 +454,6 @@ public class EditProfileActivity extends AppCompatActivity {
                             finish();
                         }
                     };
-
             // Show dialog that there are unsaved changes
             showUnsavedChangesDialog(discardButtonClickListener);
         }

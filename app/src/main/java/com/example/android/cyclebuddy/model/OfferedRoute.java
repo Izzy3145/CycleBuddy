@@ -5,10 +5,7 @@ import android.os.Parcelable;
 
 public class OfferedRoute implements Parcelable{
 
-    //TODO: make duration nullable
-
     private String from;
-    private String via;
     private String to;
     private int duration;
     private String userID;
@@ -23,20 +20,8 @@ public class OfferedRoute implements Parcelable{
 
     }
 
-    public OfferedRoute(String from, String via, String to, int duration, String userID){
-        this.from = from;
-        this.via = via;
-        this.to = to;
-        this.duration = duration;
-        this.userID = userID;
-    }
-
     public String getFrom(){
         return from;
-    }
-
-    public String getVia(){
-        return via;
     }
 
     public String getTo(){
@@ -56,10 +41,6 @@ public class OfferedRoute implements Parcelable{
 
     public void setFrom(String from){
         this.from = from;
-    }
-
-    public void setVia(String via){
-        this.via = via;
     }
 
     public void setTo(String to){
@@ -90,7 +71,6 @@ public class OfferedRoute implements Parcelable{
         to = in.readString();
         duration = in.readInt();
         userID = in.readString();
-        //TODO: add in write in "via"
     }
 
     @Override

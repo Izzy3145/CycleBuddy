@@ -10,9 +10,8 @@ import android.widget.RemoteViews;
 import com.example.android.cyclebuddy.MainActivity;
 import com.example.android.cyclebuddy.R;
 
-/**
- * Implementation of App Widget functionality.
- */
+//control widget that allows user to navigate directly to search, offer and message fragments
+
 public class BuddyWidget extends AppWidgetProvider {
 
     private final static String WIDGET_ICON = "widget icon";

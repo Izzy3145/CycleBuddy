@@ -8,7 +8,6 @@ public class Message {
     @Nullable private String message;
     @Nullable private String timestamp;
 
-
     public Message(){}
 
     public Message(@Nullable String userID, @Nullable String message, @Nullable String timestamp){

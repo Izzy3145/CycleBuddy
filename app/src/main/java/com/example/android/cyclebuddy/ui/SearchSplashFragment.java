@@ -14,6 +14,7 @@ import com.example.android.cyclebuddy.ViewProfileActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//currently unused fragment, but will be used in further development to provide tips for people in need of a buddy
 
 public class SearchSplashFragment extends Fragment implements View.OnClickListener{
 
@@ -46,7 +47,6 @@ public class SearchSplashFragment extends Fragment implements View.OnClickListen
         ButterKnife.bind(this,view);
         wholeSearchSplash.setOnClickListener(this);
         splashOkButton.setOnClickListener(this);
-
         return view;
     }
 
@@ -56,5 +56,4 @@ public class SearchSplashFragment extends Fragment implements View.OnClickListen
         openProfileActivity.putExtra(PASSED_BUNDLE, mReceivedBundle);
         startActivity(openProfileActivity);
     }
-
 }

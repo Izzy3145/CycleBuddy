@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.helpers.Constants;
@@ -38,16 +36,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
+    private static final String PASSED_BUNDLE = "passed bundle";
+    private static final String SELECTED_ROUTE = "selectedRoute";
+    private static final String CONVO_PUSH_KEY = "convo_push_key";
+    private static final String NO_ENTRY = "empty";
     @BindView(R.id.profile_toolbar)
     Toolbar profileToolbar;
     @BindView(R.id.view_profile_image_view)
@@ -66,7 +66,6 @@ public class ViewProfileActivity extends AppCompatActivity {
     TextView miniBioHeaderTv;
     @BindView(R.id.message_button)
     Button messageButton;
-
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseStorage mFirebaseStorage;
     private DatabaseReference mUsersDatabaseRef;
@@ -74,15 +73,47 @@ public class ViewProfileActivity extends AppCompatActivity {
     private UserProfile mUserProfile;
     private String mSharedPrefUserID;
     private String mPictureUUID;
+    //method for setting up UI based on userProfile information
+    ValueEventListener profileDataListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mUserProfile = dataSnapshot.getValue(UserProfile.class);
+            //set data to views
+            if (mUserProfile != null) {
+                //set views to stored data
+                nameTv.setText(mUserProfile.getUser());
+                if (getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)) {
+                    buddyTypeTv.setVisibility(View.GONE);
+                } else {
+                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
+                }
+                if (getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)) {
+                    yearsCyclingTv.setVisibility(View.GONE);
+                } else {
+                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
+                }
+                if (getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)) {
+                    cyclingFrequencyTv.setVisibility(View.GONE);
+                } else {
+                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
+                }
+                miniBioTv.setText(mUserProfile.getMiniBio());
+                if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
+                    Timber.v("No photo saved yet");
+                } else {
+                    mPictureUUID = mUserProfile.getPhotoUrl();
+                    downloadImage(mPictureUUID);
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
     private MessageSummary messageSummary;
     private SharedPreferences mSharedPreferences;
-
     private OfferedRoute mSelectedRoute;
-    private static final String PASSED_BUNDLE = "passed bundle";
-    private static final String SELECTED_ROUTE = "selectedRoute";
-    private static final String CONVO_PUSH_KEY = "convo_push_key";
-    private static final String NO_ENTRY = "empty";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +126,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
-            }
+        }
 
         //get userID and photo UUID from shared preferences
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -110,15 +141,10 @@ public class ViewProfileActivity extends AppCompatActivity {
             enableMessageButton(mSharedPrefUserID);
         } else {
             mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
-                    "unsuccessful");
+                    getResources().getString(R.string.unsuccessful));
         }
 
-        //initialise member variables
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mUsersDatabaseRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(mSharedPrefUserID);
-        mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
-        messageSummary = new MessageSummary("","","");
+        initialiseMemberVariables();
 
         //download all other values
         mUsersDatabaseRef.addValueEventListener(profileDataListener);
@@ -157,9 +183,19 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID), "unsuccessful");
+        mSharedPrefUserID = mSharedPreferences.getString(getString(R.string.preference_user_ID),
+                getResources().getString(R.string.unsuccessful));
         //download all other values
         mUsersDatabaseRef.addValueEventListener(profileDataListener);
+    }
+
+    private void initialiseMemberVariables() {
+        //initialise member variables
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUsersDatabaseRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(mSharedPrefUserID);
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(mSharedPrefUserID);
+        messageSummary = new MessageSummary("", "", "");
     }
 
     private void downloadImage(String pictureUUID) {
@@ -190,7 +226,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
     }
 
-    private String createNewConversation(String buddyID){
+    private String createNewConversation(String buddyID) {
         final String currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DatabaseReference convoRef = mFirebaseDatabase.getReference(Constants.CONVERSATIONS_PATH);
         final DatabaseReference pushRef = convoRef.push();
@@ -201,7 +237,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         messageSummary.setBuddyOneID(currentUserID);
         messageSummary.setBuddyTwoID(buddyID);
         HashMap<String, Object> convoItemMap = new HashMap<String, Object>();
-        HashMap<String,Object> convoObject = (HashMap<String, Object>) new ObjectMapper()
+        HashMap<String, Object> convoObject = (HashMap<String, Object>) new ObjectMapper()
                 .convertValue(messageSummary, Map.class);
         convoItemMap.put("/" + pushKey, convoObject);
         convoRef.updateChildren(convoItemMap);
@@ -215,7 +251,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         mBuddyRef.updateChildren(convoItemMap);
 
         //create a new branch within the messages branch of the database, using unique pushID
-        Message emptyMessage = new Message(currentUserID, "Hey Buddy", "");
+        Message emptyMessage = new Message(currentUserID, getResources().getString(R.string.hey),
+                Long.toString(System.currentTimeMillis()));
         final DatabaseReference newSetOfMessagesRef = mFirebaseDatabase.getReference()
                 .child(Constants.MESSAGES_PATH).child(pushKey);
         final DatabaseReference msgPush = newSetOfMessagesRef.push();
@@ -256,42 +293,4 @@ public class ViewProfileActivity extends AppCompatActivity {
             return NO_ENTRY;
         }
     }
-
-    //method for setting up UI based on userProfile information
-    ValueEventListener profileDataListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            mUserProfile = dataSnapshot.getValue(UserProfile.class);
-            //set data to views
-            if (mUserProfile != null) {
-                //set views to stored data
-                nameTv.setText(mUserProfile.getUser());
-                if(getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)){
-                    buddyTypeTv.setVisibility(View.GONE);
-                } else {
-                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
-                }
-                if(getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)){
-                    yearsCyclingTv.setVisibility(View.GONE);
-                } else {
-                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
-                }
-                if(getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)){
-                    cyclingFrequencyTv.setVisibility(View.GONE);
-                } else {
-                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
-                }
-                miniBioTv.setText(mUserProfile.getMiniBio());
-                if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
-                    Timber.v("No photo saved yet");
-                } else {
-                    mPictureUUID = mUserProfile.getPhotoUrl();
-                    downloadImage(mPictureUUID);
-                }
-            }}
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-        }
-    };
 }

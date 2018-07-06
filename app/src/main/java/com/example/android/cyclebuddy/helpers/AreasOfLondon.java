@@ -2,7 +2,7 @@ package com.example.android.cyclebuddy.helpers;
 
 public class AreasOfLondon {
 
-    //TODO: make postcodes relate to areas, so that both results come from search results
+    //TODO: for later development, make postcodes relate or couple with areas
 
     public static String[] areasAndPostcodes = {"Abbey Wood","Acton","Addington","Addiscombe","Albany Park",
             "Aldborough Hatch","Aldgate","Aldwych","Alperton","Anerley","Angel","Aperfield","Archway",
@@ -38,7 +38,7 @@ public class AreasOfLondon {
             "Hampstead Garden Suburb","Hampton","Hampton Hill","Hampton Wick","Hanwell","Hanworth",
             "Harefield","Harlesden","Harlington","Harmondsworth","Harold Hill","Harold Park","Harold Wood",
             "Harringay","Harrow","Harrow on the Hill","Harrow Weald","Hatch End","Hatton","Havering-atte-Bower",
-            "Hayes","Hayes","Hazelwood","Hendon","Herne Hill","Heston","Highams Park","Highbury",
+            "Hayes","Hayes","Hazelwood","Heathrow", "Hendon","Herne Hill","Heston","Highams Park","Highbury",
             "Highgate","Hillingdon","Hither Green","Holborn","Holland Park","Holloway","Homerton",
             "Honor Oak","Hook","Hornchurch","Horn Park","Hornsey","Hounslow","Hoxton","The Hyde",
             "Ickenham","Ilford","Isle of Dogs","Isleworth","Islington","Kenley","Kennington","Kensal Green",

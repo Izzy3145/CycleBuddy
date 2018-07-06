@@ -14,12 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.helpers.Constants;
+import com.example.android.cyclebuddy.helpers.TimeUtils;
 import com.example.android.cyclebuddy.model.Message;
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,6 +47,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+//fragment to show conversation detail, with messages downloaded from Firebase database
 
 public class ConversationFragment extends android.app.Fragment implements View.OnClickListener {
 
@@ -111,13 +116,8 @@ public class ConversationFragment extends android.app.Fragment implements View.O
         final String pushKey = pushRef.getKey();
 
         String sentMessage = mMessageEditText.getText().toString();
-
         //create new message object
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        Date date = new Date();
-        String timestamp = dateFormat.format(date);
-
-        Message message = new Message(currentUserID, sentMessage, timestamp);
+        Message message = new Message(currentUserID, sentMessage, Long.toString(System.currentTimeMillis()));
 
         //put message object through HashMap and add to Messages section of database
         HashMap<String, Object> messageItemMap = new HashMap<String, Object>();
@@ -140,14 +140,16 @@ public class ConversationFragment extends android.app.Fragment implements View.O
             @Override
             protected void populateView(View v, final Message message, final int position) {
                 LinearLayout messageBubble = (LinearLayout) v.findViewById(R.id.message_bubble);
-                final TextView userTv = (TextView) v.findViewById(R.id.user_sender);
+                //final TextView userTv = (TextView) v.findViewById(R.id.user_sender);
                 TextView messageTv = (TextView) v.findViewById(R.id.message_content);
+                TextView timeTv = (TextView)v.findViewById(R.id.message_time);
                 final ImageView leftImage = (ImageView) v.findViewById(R.id.leftMessagePic);
                 final ImageView rightImage = (ImageView) v.findViewById(R.id.rightMessagePic);
                 LinearLayout userAndMessage = (LinearLayout) v.findViewById(R.id.user_and_message);
 
                 //set message and other profile information to view
                 messageTv.setText(message.getMessage());
+                timeTv.setText(TimeUtils.displayTimeOrDate(Long.parseLong(message.getTimestamp())));
                 final String messageUserID = message.getUserID();
                 //get other profile information
                 DatabaseReference userDbRef = mFirebaseDatabase.getReference().child(Constants.USERS_PATH)
@@ -156,7 +158,7 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-                        userTv.setText(userProfile.getUser());
+                        //userTv.setText(userProfile.getUser());
                         pictureUUID = userProfile.getPhotoUrl();
 
                         //download the saved image
@@ -177,10 +179,8 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                                 .transform(new CircularImageTransform(getContext()))
                                 .into(leftImage);
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
 
@@ -190,9 +190,7 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                     leftImage.setVisibility(View.GONE);
                     rightImage.setVisibility(View.VISIBLE);
                     userAndMessage.setBackgroundResource(R.drawable.speechbubbleorange);
-
                 } else {
-
                     messageBubble.setGravity(Gravity.LEFT);
                     leftImage.setVisibility(View.VISIBLE);
                     rightImage.setVisibility(View.GONE);

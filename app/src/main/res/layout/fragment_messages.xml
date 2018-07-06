@@ -27,14 +27,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <TextView
-        android:id="@+id/lv_messages_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone"
-        android:text="@string/no_open_conversations"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/large_text"/>
 
 </LinearLayout>

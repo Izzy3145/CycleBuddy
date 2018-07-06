@@ -31,8 +31,20 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/large_text" />
 
+        <!--<TextView-->
+            <!--android:id="@+id/user_sender"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingTop="@dimen/small_border"-->
+            <!--android:paddingStart="@dimen/medium_border"-->
+            <!--android:paddingEnd="@dimen/medium_border"-->
+            <!--android:paddingBottom="@dimen/medium_border"-->
+            <!--android:text="Text"-->
+            <!--android:textColor="@color/primary_text"-->
+            <!--android:textSize="@dimen/very_small_text" />-->
+
         <TextView
-            android:id="@+id/user_sender"
+            android:id="@+id/message_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/small_border"
@@ -42,8 +54,6 @@
             android:text="Text"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/very_small_text" />
-
-
 
     </LinearLayout>
 

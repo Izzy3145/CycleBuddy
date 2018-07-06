@@ -9,15 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.android.cyclebuddy.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//fragment that thanks the user for offering to be a buddy
+
 public class OfferSplashFragment extends Fragment implements View.OnClickListener{
 
-    @BindView(R.id.whole_offer_splash) LinearLayout wholeOfferSplash;
+    @BindView(R.id.whole_offer_splash)
+    RelativeLayout wholeOfferSplash;
     private FragmentManager fm;
 
     public OfferSplashFragment() {

@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/light_grey"
     android:id="@+id/whole_offer_splash">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/offersplash" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/offersplash"
+        android:gravity="center"
+        android:layout_margin="@dimen/very_large_border"
+        android:textSize="@dimen/title_text"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"/>
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_mikecyclebuddy2" />
+
+</RelativeLayout>

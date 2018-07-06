@@ -31,6 +31,7 @@
     <!-- authentication strings -->
     <string name="signed_in">Signed in!</string>
     <string name="sign_in_cancelled">Sign in cancelled.</string>
+    <string name="unsuccessful">Unsuccessful</string>
 
     <!-- profile strings -->
     <string name="name">User name</string>
@@ -90,6 +91,7 @@
     <string name="click">Click</string>
     <string name="ok">Ok</string>
     <string name="no_data_available">No matching routes</string>
+    <string name="populate">Please populate all fields</string>
 
     <!-- offer fragments strings -->
     <string name="be_a_buddy_exclamation">Be a Cycle Buddy!</string>
@@ -111,7 +113,7 @@
     <string name="no_open_conversations">No open conversations</string>
     <string name="send">Send</string>
     <string name="type_here">Type here...</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="hey">Hey Buddy!</string>
     <string name="add_widget">Add widget</string>
 
 

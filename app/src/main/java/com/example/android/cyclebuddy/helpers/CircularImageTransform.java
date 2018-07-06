@@ -9,14 +9,12 @@ import android.graphics.Paint;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+//method to create circular images
+
 public class CircularImageTransform extends BitmapTransformation {
 
     public CircularImageTransform(Context context) {
         super(context);
-    }
-
-    @Override protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        return circleCrop(pool, toTransform);
     }
 
     private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
@@ -42,7 +40,13 @@ public class CircularImageTransform extends BitmapTransformation {
         return result;
     }
 
-    @Override public String getId() {
+    @Override
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return circleCrop(pool, toTransform);
+    }
+
+    @Override
+    public String getId() {
         return getClass().getName();
     }
 }

@@ -1,8 +1,9 @@
 package com.example.android.cyclebuddy.ui;
 
 
+import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,39 +11,32 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.Fragment;
 import android.widget.TextView;
-
 import com.example.android.cyclebuddy.R;
+import com.example.android.cyclebuddy.ViewProfileActivity;
 import com.example.android.cyclebuddy.adapters.SearchResultsAdapter;
 import com.example.android.cyclebuddy.model.OfferedRoute;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {} interface
- * to handle interaction events.
- * Use the {@link SearchListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SearchListFragment extends Fragment implements
-        SearchResultsAdapter.SearchResultsAdapterListener{
+//fragment that shows a list of found routes (following a search), as returned from the database
 
-   // private OnFragmentInteractionListener mListener;
-   @BindView(R.id.results_recycler_view) RecyclerView mRecyclerView;
-   @BindView(R.id.rv_empty_view) TextView mEmptyView;
-   private FragmentManager fm;
-   private RecyclerView.LayoutManager mLayoutManager;
-   private SearchResultsAdapter mAdapter;
+public class SearchListFragment extends Fragment implements
+        SearchResultsAdapter.SearchResultsAdapterListener {
+
+    @BindView(R.id.results_recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_empty_view)
+    TextView mEmptyView;
+    private FragmentManager fm;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private SearchResultsAdapter mAdapter;
+    private ArrayList<OfferedRoute> foundRoutesList;
 
     private static final String DATASET_1 = "dataSet1";
     private static final String SELECTED_ROUTE = "selectedRoute";
-    private ArrayList<OfferedRoute> foundRoutesList;
+    private static final String PASSED_BUNDLE = "passed bundle";
 
     public SearchListFragment() {
         // Required empty public constructor
@@ -75,7 +69,7 @@ public class SearchListFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search_list, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
         //set up recyclerView
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
@@ -83,15 +77,12 @@ public class SearchListFragment extends Fragment implements
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if(foundRoutesList == null || foundRoutesList.size() == 0){
+        if (foundRoutesList == null || foundRoutesList.size() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
             mEmptyView.setVisibility(View.GONE);
-            //set dataset to adapter
             mAdapter = new SearchResultsAdapter(getContext(), foundRoutesList, this);
-            //mAdapter.setStepsForNextView(mSteps);
-            //set adapter to recycler view
             mRecyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -100,17 +91,13 @@ public class SearchListFragment extends Fragment implements
 
     @Override
     public void onClickMethod(ArrayList<OfferedRoute> dataset, int position) {
+        //open View Profile
         OfferedRoute selectedRoute = dataset.get(position);
-
         Bundle bundle = new Bundle();
         bundle.putParcelable(SELECTED_ROUTE, selectedRoute);
-
-        android.app.Fragment ssFragment = SearchSplashFragment.newInstance();
-        FragmentTransaction fragmentTransaction=fm.beginTransaction();
-        ssFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragment_container, ssFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        Intent openProfileActivity = new Intent(getActivity(), ViewProfileActivity.class);
+        openProfileActivity.putExtra(PASSED_BUNDLE, bundle);
+        startActivity(openProfileActivity);
 
     }
 }

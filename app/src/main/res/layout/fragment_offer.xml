@@ -63,29 +63,6 @@
         android:textSize="@dimen/small_text" />
 
     <TextView
-        android:id="@+id/offer_via_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_border"
-        android:layout_marginEnd="@dimen/medium_border"
-        android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/large_border"
-        android:text="@string/offer_via"
-        android:textSize="@dimen/large_text" />
-
-    <AutoCompleteTextView
-        android:id="@+id/offer_via_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="250dp"
-        android:hint="@string/example_via"
-        android:layout_marginBottom="@dimen/medium_border"
-        android:layout_marginEnd="@dimen/medium_border"
-        android:layout_marginStart="@dimen/large_border"
-        android:layout_marginTop="@dimen/very_small_border"
-        android:textSize="@dimen/small_text" />
-
-    <TextView
         android:id="@+id/offer_to_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

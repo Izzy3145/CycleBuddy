@@ -1,10 +1,9 @@
 package com.example.android.cyclebuddy.ui;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +14,14 @@ import com.example.android.cyclebuddy.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//the opening or home fragment, with buttons leading to SearchFragment and OfferFragment
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * { RideFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RideFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RideFragment extends Fragment implements View.OnClickListener {
 
-    @BindView(R.id.rf_search_button) Button searchButton;
-    @BindView(R.id.rf_offer_button) Button offerButton;
+    @BindView(R.id.rf_search_button)
+    Button searchButton;
+    @BindView(R.id.rf_offer_button)
+    Button offerButton;
     private FragmentManager fm;
     private OnNavigationItemChanged mCallback;
 
@@ -57,13 +51,9 @@ public class RideFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    public interface OnNavigationItemChanged{
-        void changeHighlightedIcon(int menuItemId);
-    }
-
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.rf_search_button:
                 mCallback.changeHighlightedIcon(R.id.navigation_search);
                 break;
@@ -82,5 +72,9 @@ public class RideFragment extends Fragment implements View.OnClickListener {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    public interface OnNavigationItemChanged {
+        void changeHighlightedIcon(int menuItemId);
     }
 }

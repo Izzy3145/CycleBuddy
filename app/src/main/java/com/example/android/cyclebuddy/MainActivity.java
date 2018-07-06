@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
 import com.example.android.cyclebuddy.helpers.BottomNavigationHelper;
 import com.example.android.cyclebuddy.helpers.CustomTypefaceSpan;
 import com.example.android.cyclebuddy.ui.ConversationFragment;
@@ -33,36 +34,63 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements RideFragment.OnNavigationItemChanged {
-
-    @BindView(R.id.navigation)
-    BottomNavigationView navigation;
-    @BindView(R.id.main_toolbar)
-    Toolbar mainToolbar;
-
-    private FragmentManager fragmentManager;
-    private String mUsername;
-    private String userID;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
     private static final String CONVO_PUSH_KEY = "convo_push_key";
     private static final String CONVERSATION_UID = "conversation UID";
     private final static String WIDGET_ICON = "widget icon";
+    @BindView(R.id.navigation)
+    BottomNavigationView navigation;
+    @BindView(R.id.main_toolbar)
+    Toolbar mainToolbar;
+    private FragmentManager fragmentManager;
+    private String mUsername;
+    private String userID;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    //set up BottomNavigation listener to inflate the necessary fragment
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment selectedFragment = null;
+            switch (item.getItemId()) {
+                case R.id.navigation_ride:
+                    selectedFragment = RideFragment.newInstance();
+                    break;
+                case R.id.navigation_search:
+                    selectedFragment = SearchFragment.newInstance();
+                    break;
+                case R.id.navigation_offer:
+                    selectedFragment = OfferFragment.newInstance();
+                    break;
+                case R.id.navigation_messages:
+                    selectedFragment = MessageListFragment.newInstance();
+                    break;
+            }
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
+        MobileAds.initialize(this, "ca-app-pub-7316772410290224~5085755047");
 
         setUpActionBar();
 
@@ -120,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
                 fragmentToOpen = cf;
                 navigation.setSelectedItemId(R.id.navigation_messages);
 
-            } else if(getIntent().getIntExtra(WIDGET_ICON, 0) != 0) {
+            } else if (getIntent().getIntExtra(WIDGET_ICON, 0) != 0) {
                 int widgetIconPressed = getIntent().getIntExtra(WIDGET_ICON, 0);
                 switch (widgetIconPressed) {
                     case 1:
@@ -170,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
     @Override
     protected void onResume() {
         super.onResume();
-        if(mAuthStateListener!= null) {
+        if (mAuthStateListener != null) {
             mAuth.addAuthStateListener(mAuthStateListener);
         }
         fragmentManager = getFragmentManager();
@@ -183,35 +211,6 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
             mAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
-
-    //set up BottomNavigation listener to inflate the necessary fragment
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
-            switch (item.getItemId()) {
-                case R.id.navigation_ride:
-                    selectedFragment = RideFragment.newInstance();
-                    break;
-                case R.id.navigation_search:
-                    selectedFragment = SearchFragment.newInstance();
-                    break;
-                case R.id.navigation_offer:
-                    selectedFragment = OfferFragment.newInstance();
-                    break;
-                case R.id.navigation_messages:
-                    selectedFragment = MessageListFragment.newInstance();
-                    break;
-            }
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-            return true;
-        }
-    };
 
     @Override
     public void changeHighlightedIcon(int menuItemId) {
@@ -235,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         }
     }
 
-    private void setUpActionBar(){
+    private void setUpActionBar() {
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
         //set action bar title with custom font

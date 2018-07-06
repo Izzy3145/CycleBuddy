@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 
 public class UserProfile {
 
-    //TODO: set up username for viewing in search list
-
     private String userID;
     private String user;
     private String buddyType;

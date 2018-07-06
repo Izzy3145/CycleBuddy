@@ -105,6 +105,7 @@
         android:text="@string/message_button"
         android:visibility="gone"
         android:textColor="@color/white"
+        android:layout_marginTop="@dimen/large_border"
         android:background="@drawable/normal_button"
         style="@style/buttonStyle" />
 
