@@ -81,7 +81,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener {
 
         //initialise ad
         mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.admob_app_id_offer));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 

@@ -69,7 +69,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         mCurrentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         //initialise ad
         mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.admob_app_id_search));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 

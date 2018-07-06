@@ -118,7 +118,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //initialise ad
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.admob_app_id_save));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         initialiseMemberVariables();
