@@ -4,7 +4,7 @@
     <dimen name="widget_height">64dp</dimen>
     <dimen name="widget_button_size">56dp</dimen>
     <dimen name="widget_image_size">32dp</dimen>
-    <dimen name="small_image_size">72dp</dimen>
+    <dimen name="small_image_size">64dp</dimen>
     <dimen name="convo_image_size">56dp</dimen>
     <dimen name="very_small_border">2dp</dimen>
     <dimen name="small_border">4dp</dimen>

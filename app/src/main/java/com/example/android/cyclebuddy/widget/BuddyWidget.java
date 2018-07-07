@@ -24,17 +24,20 @@ public class BuddyWidget extends AppWidgetProvider {
 
         Intent searchIntent = new Intent(context, MainActivity.class);
         searchIntent.putExtra(WIDGET_ICON, 1);
-        PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 10, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 10,
+                searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_search, searchPendingIntent);
 
         Intent offerIntent = new Intent(context, MainActivity.class);
         offerIntent.putExtra(WIDGET_ICON, 2);
-        PendingIntent offerPendingIntent = PendingIntent.getActivity(context, 20, offerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent offerPendingIntent = PendingIntent.getActivity(context, 20,
+                offerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_offer, offerPendingIntent);
 
         Intent messageIntent = new Intent(context, MainActivity.class);
         messageIntent.putExtra(WIDGET_ICON, 3);
-        PendingIntent messagePendingIntent = PendingIntent.getActivity(context, 30, messageIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent messagePendingIntent = PendingIntent.getActivity(context, 30,
+                messageIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_messages, messagePendingIntent);
 
         // Instruct the widget manager to update the widget

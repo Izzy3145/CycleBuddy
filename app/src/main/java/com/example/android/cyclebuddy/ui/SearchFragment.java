@@ -16,6 +16,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.helpers.AreasOfLondon;
+import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -34,7 +35,6 @@ import timber.log.Timber;
 
 public class SearchFragment extends Fragment implements View.OnClickListener {
 
-    private static String TAG = "LOG_TAG_FOR_SEARCH";
     @BindView(R.id.sf_search_button)
     Button sfSearchButton;
     @BindView(R.id.search_from_edit_text)
@@ -93,8 +93,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         if (sfFromEditText.getText().toString().equals("") || sfToEditText.getText().toString().equals("")) {
             //data validation
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Please populate all fields");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setMessage(getResources().getString(R.string.populate));
+            builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             searchTo = sfToEditText.getText().toString();
 
             //search the database for the searched route
-            mOfferDatabaseReference.child("Offered").orderByChild("from").equalTo(searchFrom)
+            mOfferDatabaseReference.child(Constants.OFFERED_PATH).orderByChild("from").equalTo(searchFrom)
                     .addListenerForSingleValueEvent(
                             new ValueEventListener() {
                                 @Override
@@ -127,7 +127,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                                                 foundRoutesList.add(foundRoute);
                                             }
                                         }
-                                        Log.d(TAG, "no of records of the search is " + foundRoutesList.size());
+                                        Timber.d("no of records of the search is " + foundRoutesList.size());
                                     }
 
                                     android.app.Fragment slFragment = SearchListFragment.newInstance(foundRoutesList);

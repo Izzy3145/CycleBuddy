@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        MobileAds.initialize(this, "ca-app-pub-7316772410290224~5085755047");
+        MobileAds.initialize(this, getResources().getString(R.string.admob_initialise));
 
         setUpActionBar();
 

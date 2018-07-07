@@ -10,6 +10,7 @@
         android:layout_width="@dimen/convo_image_size"
         android:layout_height="@dimen/convo_image_size"
         android:layout_margin="@dimen/medium_border"
+        android:contentDescription="@string/view_profile_cd"
         android:src="@drawable/ic_profile_picture_placeholder" />
 
     <LinearLayout
@@ -27,21 +28,9 @@
             android:paddingStart="@dimen/medium_border"
             android:paddingEnd="@dimen/medium_border"
             android:paddingBottom="@dimen/small_border"
-            android:text="Text"
+            android:text="@string/received_message"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/large_text" />
-
-        <!--<TextView-->
-            <!--android:id="@+id/user_sender"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingTop="@dimen/small_border"-->
-            <!--android:paddingStart="@dimen/medium_border"-->
-            <!--android:paddingEnd="@dimen/medium_border"-->
-            <!--android:paddingBottom="@dimen/medium_border"-->
-            <!--android:text="Text"-->
-            <!--android:textColor="@color/primary_text"-->
-            <!--android:textSize="@dimen/very_small_text" />-->
 
         <TextView
             android:id="@+id/message_time"
@@ -51,7 +40,7 @@
             android:paddingStart="@dimen/medium_border"
             android:paddingEnd="@dimen/medium_border"
             android:paddingBottom="@dimen/medium_border"
-            android:text="Text"
+            android:text="@string/time_of_message"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/very_small_text" />
 
@@ -63,6 +52,7 @@
         android:id="@+id/rightMessagePic"
         android:visibility="gone"
         android:layout_margin="@dimen/medium_border"
+        android:contentDescription="@string/view_profile_cd"
         android:src="@drawable/ic_profile_picture_placeholder"/>
 
     </LinearLayout>

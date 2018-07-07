@@ -19,7 +19,7 @@ public class TimeUtils {
         } else {
             Calendar cal = Calendar.getInstance(Locale.ENGLISH);
             cal.setTimeInMillis(milliseconds);
-            String date = DateFormat.format("dd-MM-yyyy", cal).toString();
+            String date = DateFormat.format("dd/MM/yyyy", cal).toString();
             return date;
         }
     }

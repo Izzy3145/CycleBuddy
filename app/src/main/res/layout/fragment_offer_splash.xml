@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/cycle_buddy"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_mikecyclebuddy2" />
 

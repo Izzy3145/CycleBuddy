@@ -8,6 +8,8 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
+import timber.log.Timber;
+
 public class BottomNavigationHelper {
 
     @SuppressLint("RestrictedApi")
@@ -27,9 +29,9 @@ public class BottomNavigationHelper {
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {
-            Log.e("BottomNav", "Unable to get shift mode field", e);
+            Timber.e("Unable to get shift mode field");
         } catch (IllegalAccessException e) {
-            Log.e("BottomNav", "Unable to change value of shift mode", e);
+            Timber.e("Unable to change value of shift mode");
         }
     }
 }

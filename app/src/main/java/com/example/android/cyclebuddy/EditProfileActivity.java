@@ -151,13 +151,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 mMiniBio = bioEditText.getText().toString();
 
                 HashMap<String, Object> newUserMap = new HashMap<>();
-                newUserMap.put("userID", mSharedPrefUserID);
-                newUserMap.put("user", mName);
-                newUserMap.put("buddyType", mBuddyType);
-                newUserMap.put("yearsCycling", mYearsCycling);
-                newUserMap.put("cyclingFrequency", mCyclingFrequency);
-                newUserMap.put("miniBio", mMiniBio);
-                newUserMap.put("photoUrl", mPictureUUID);
+                newUserMap.put(getResources().getString(R.string.userID), mSharedPrefUserID);
+                newUserMap.put(getResources().getString(R.string.user), mName);
+                newUserMap.put(getResources().getString(R.string.buddyType), mBuddyType);
+                newUserMap.put(getResources().getString(R.string.yearsCycling), mYearsCycling);
+                newUserMap.put(getResources().getString(R.string.cyclingFrequency), mCyclingFrequency);
+                newUserMap.put(getResources().getString(R.string.miniBio), mMiniBio);
+                newUserMap.put(getResources().getString(R.string.photoUrl), mPictureUUID);
 
                 mProfileDatabaseReference.updateChildren(newUserMap);
 

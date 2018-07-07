@@ -2,6 +2,7 @@ package com.example.android.cyclebuddy;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -73,44 +74,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private UserProfile mUserProfile;
     private String mSharedPrefUserID;
     private String mPictureUUID;
-    //method for setting up UI based on userProfile information
-    ValueEventListener profileDataListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            mUserProfile = dataSnapshot.getValue(UserProfile.class);
-            //set data to views
-            if (mUserProfile != null) {
-                //set views to stored data
-                nameTv.setText(mUserProfile.getUser());
-                if (getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)) {
-                    buddyTypeTv.setVisibility(View.GONE);
-                } else {
-                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
-                }
-                if (getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)) {
-                    yearsCyclingTv.setVisibility(View.GONE);
-                } else {
-                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
-                }
-                if (getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)) {
-                    cyclingFrequencyTv.setVisibility(View.GONE);
-                } else {
-                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
-                }
-                miniBioTv.setText(mUserProfile.getMiniBio());
-                if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
-                    Timber.v("No photo saved yet");
-                } else {
-                    mPictureUUID = mUserProfile.getPhotoUrl();
-                    downloadImage(mPictureUUID);
-                }
-            }
-        }
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-        }
-    };
     private MessageSummary messageSummary;
     private SharedPreferences mSharedPreferences;
     private OfferedRoute mSelectedRoute;
@@ -146,8 +110,8 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         initialiseMemberVariables();
 
-        //download all other values
-        mUsersDatabaseRef.addValueEventListener(profileDataListener);
+        getProfileAsync getProfileInfo = new getProfileAsync();
+        getProfileInfo.execute();
     }
 
     @Override
@@ -209,6 +173,54 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .transform(new CircularImageTransform(ViewProfileActivity.this))
                 .into(profileImageView);
     }
+
+    private class getProfileAsync extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //download all other values
+            mUsersDatabaseRef.addValueEventListener(profileDataListener);
+            return null;
+        }
+    }
+    //method for setting up UI based on userProfile information
+    ValueEventListener profileDataListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mUserProfile = dataSnapshot.getValue(UserProfile.class);
+            //set data to views
+            if (mUserProfile != null) {
+                //set views to stored data
+                nameTv.setText(mUserProfile.getUser());
+                if (getSummaryText(mUserProfile.getBuddyType()).equals(NO_ENTRY)) {
+                    buddyTypeTv.setVisibility(View.GONE);
+                } else {
+                    buddyTypeTv.setText(getSummaryText(mUserProfile.getBuddyType()));
+                }
+                if (getSummaryText(mUserProfile.getYearsCycling()).equals(NO_ENTRY)) {
+                    yearsCyclingTv.setVisibility(View.GONE);
+                } else {
+                    yearsCyclingTv.setText(getSummaryText(mUserProfile.getYearsCycling()));
+                }
+                if (getSummaryText(mUserProfile.getCyclingFrequency()).equals(NO_ENTRY)) {
+                    cyclingFrequencyTv.setVisibility(View.GONE);
+                } else {
+                    cyclingFrequencyTv.setText(getSummaryText(mUserProfile.getCyclingFrequency()));
+                }
+                miniBioTv.setText(mUserProfile.getMiniBio());
+                if (mUserProfile.getPhotoUrl() == null || mUserProfile.getPhotoUrl().isEmpty()) {
+                    Timber.v("No photo saved yet");
+                } else {
+                    mPictureUUID = mUserProfile.getPhotoUrl();
+                    downloadImage(mPictureUUID);
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
 
     private void enableMessageButton(final String buddyUserID) {
         //if another user's profile is being viewed, enable the send button

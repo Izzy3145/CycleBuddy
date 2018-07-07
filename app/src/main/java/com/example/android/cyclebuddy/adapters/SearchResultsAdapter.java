@@ -2,6 +2,7 @@ package com.example.android.cyclebuddy.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.R;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
+import com.example.android.cyclebuddy.helpers.Constants;
 import com.example.android.cyclebuddy.model.OfferedRoute;
 import com.example.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -66,9 +68,9 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         holder.resultDurationTv.setText(offeredRoute.getDurationString());
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mRef = mFirebaseDatabase.getReference("Users").child(offeredRoute.getUserID());
+        mRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(offeredRoute.getUserID());
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mStorageReference = mFirebaseStorage.getReference().child("images").child(offeredRoute.getUserID());
+        mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH).child(offeredRoute.getUserID());
 
         //download all other values
         mRef.addValueEventListener(new ValueEventListener() {

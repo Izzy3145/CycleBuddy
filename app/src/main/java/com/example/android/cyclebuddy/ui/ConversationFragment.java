@@ -158,26 +158,27 @@ public class ConversationFragment extends android.app.Fragment implements View.O
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-                        //userTv.setText(userProfile.getUser());
+
                         pictureUUID = userProfile.getPhotoUrl();
+                        if(pictureUUID != null) {
+                            //download the saved image
+                            StorageReference rightDownloadRef = mStorageReference.child(messageUserID).child(pictureUUID);
+                            // Load the image using Glide
+                            Glide.with(getContext())
+                                    .using(new FirebaseImageLoader())
+                                    .load(rightDownloadRef)
+                                    .transform(new CircularImageTransform(getContext()))
+                                    .into(rightImage);
 
-                        //download the saved image
-                        StorageReference rightDownloadRef = mStorageReference.child(messageUserID).child(pictureUUID);
-                        // Load the image using Glide
-                        Glide.with(getContext())
-                                .using(new FirebaseImageLoader())
-                                .load(rightDownloadRef)
-                                .transform(new CircularImageTransform(getContext()))
-                                .into(rightImage);
-
-                        //download the saved image
-                        StorageReference leftDownloadRef = mStorageReference.child(messageUserID).child(pictureUUID);
-                        // Load the image using Glide
-                        Glide.with(getContext())
-                                .using(new FirebaseImageLoader())
-                                .load(leftDownloadRef)
-                                .transform(new CircularImageTransform(getContext()))
-                                .into(leftImage);
+                            //download the saved image
+                            StorageReference leftDownloadRef = mStorageReference.child(messageUserID).child(pictureUUID);
+                            // Load the image using Glide
+                            Glide.with(getContext())
+                                    .using(new FirebaseImageLoader())
+                                    .load(leftDownloadRef)
+                                    .transform(new CircularImageTransform(getContext()))
+                                    .into(leftImage);
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -186,12 +187,12 @@ public class ConversationFragment extends android.app.Fragment implements View.O
 
                 //set up UI according to who the sender was
                 if (messageUserID.equals(currentUserID)) {
-                    messageBubble.setGravity(Gravity.RIGHT);
+                    messageBubble.setGravity(Gravity.END);
                     leftImage.setVisibility(View.GONE);
                     rightImage.setVisibility(View.VISIBLE);
                     userAndMessage.setBackgroundResource(R.drawable.speechbubbleorange);
                 } else {
-                    messageBubble.setGravity(Gravity.LEFT);
+                    messageBubble.setGravity(Gravity.START);
                     leftImage.setVisibility(View.VISIBLE);
                     rightImage.setVisibility(View.GONE);
                     userAndMessage.setBackgroundResource(R.drawable.speechbubblepurple);

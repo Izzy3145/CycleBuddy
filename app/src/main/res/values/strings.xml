@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CycleBuddy</string>
+    <string name="app_name">Cycle Buddy</string>
 
     <!-- activity headings -->
     <string name="cycle_buddy">Cycle Buddy</string>
@@ -34,6 +34,14 @@
     <string name="unsuccessful">Unsuccessful</string>
 
     <!-- profile strings -->
+    <string name="userID" translatable="false">userID</string>
+    <string name="user" translatable="false">user</string>
+    <string name="buddyType" translatable="false">buddyType</string>
+    <string name="yearsCycling" translatable="false">yearsCycling</string>
+    <string name="cyclingFrequency" translatable="false">cyclingFrequency</string>
+    <string name="miniBio" translatable="false">miniBio</string>
+    <string name="photoUrl" translatable="false">photoUrl</string>
+
     <string name="name">User name</string>
     <string name="save_button">Save</string>
     <string name="reviews">Reviews</string>
@@ -115,8 +123,13 @@
     <string name="type_here">Type here...</string>
     <string name="hey">Hey Buddy!</string>
     <string name="add_widget">Add widget</string>
+    <string name="buddy_name">Buddy Name</string>
+    <string name="received_message">received message</string>
+    <string name="time_of_message">time of message</string>
 
 
+
+    <string name="admob_initialise">ca-app-pub-7316772410290224~5085755047</string>
     <string name="admob_app_id_search">ca-app-pub-7316772410290224/5572021961</string>
     <string name="admob_app_id_offer">ca-app-pub-7316772410290224/3683460886</string>
     <string name="admob_app_id_save">ca-app-pub-7316772410290224/8061689598</string>

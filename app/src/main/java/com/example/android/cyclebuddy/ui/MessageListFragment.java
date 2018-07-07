@@ -65,6 +65,20 @@ public class MessageListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initialiseMemberVariables();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_messages, container, false);
+        ButterKnife.bind(this, view);
+        loadExistingConversations(currentUserID);
+        return view;
+    }
+
+    private void initialiseMemberVariables(){
         fm = getActivity().getFragmentManager();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
@@ -72,17 +86,6 @@ public class MessageListFragment extends Fragment {
         currentUserID = mFirebaseAuth.getCurrentUser().getUid();
         mUserDbReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
         mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_messages, container, false);
-        ButterKnife.bind(this, view);
-        loadExistingConversations(currentUserID);
-        return view;
     }
 
     private void loadExistingConversations(String currentUser) {
