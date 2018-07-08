@@ -3,6 +3,8 @@ package com.example.android.cyclebuddy.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.android.cyclebuddy.R;
+
 public class OfferedRoute implements Parcelable{
 
     private String from;
@@ -34,7 +36,7 @@ public class OfferedRoute implements Parcelable{
 
     public int getDuration(){return duration;}
 
-    public String getDurationString(){return "Journey time: " + String.valueOf(duration) + "mins";}
+    //public String getDurationString(){return .getString(R.string.journey_time) + String.valueOf(duration) + .getString(R.string.mins);}
 
 
     public String getUserID(){return userID;}

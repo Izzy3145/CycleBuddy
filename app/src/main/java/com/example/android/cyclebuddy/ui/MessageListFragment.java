@@ -121,14 +121,16 @@ public class MessageListFragment extends Fragment {
                                 buddyName.setText(buddyUsername);
                                 String pictureUUID = userProfile.getPhotoUrl();
 
-                                //download the saved image
-                                StorageReference downloadRef = userRef.child(pictureUUID);
-                                // Load the image using Glide
-                                Glide.with(getContext())
-                                        .using(new FirebaseImageLoader())
-                                        .load(downloadRef)
-                                        .transform(new CircularImageTransform(getContext()))
-                                        .into(buddyImage);
+                                if(pictureUUID != null) {
+                                    //download the saved image
+                                    StorageReference downloadRef = userRef.child(pictureUUID);
+                                    // Load the image using Glide
+                                    Glide.with(getContext())
+                                            .using(new FirebaseImageLoader())
+                                            .load(downloadRef)
+                                            .transform(new CircularImageTransform(getContext()))
+                                            .into(buddyImage);
+                                }
                             }
 
                             @Override

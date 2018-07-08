@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="image_size">100dp</dimen>
-    <dimen name="widget_height">64dp</dimen>
     <dimen name="widget_button_size">56dp</dimen>
     <dimen name="widget_image_size">32dp</dimen>
     <dimen name="small_image_size">64dp</dimen>

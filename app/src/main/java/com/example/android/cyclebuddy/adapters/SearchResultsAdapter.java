@@ -65,7 +65,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         OfferedRoute offeredRoute = mDataset.get(position);
         holder.resultFromTv.setText(offeredRoute.getFrom());
         holder.resultToTv.setText(offeredRoute.getToString());
-        holder.resultDurationTv.setText(offeredRoute.getDurationString());
+
+        String duration = String.valueOf(offeredRoute.getDuration());
+        String journeyTime = mContext.getResources().getString(R.string.journey_time);
+        String mins = mContext.getResources().getString(R.string.mins);
+        String journeyTimeSummary = journeyTime + duration + mins;
+        holder.resultDurationTv.setText(journeyTimeSummary);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mFirebaseDatabase.getReference(Constants.USERS_PATH).child(offeredRoute.getUserID());
@@ -85,7 +90,6 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
                         Timber.v("No photo saved yet");
                     } else {
                         StorageReference downloadRef = mStorageReference.child(mUserProfile.getPhotoUrl());
-
                         Glide.with(mContext)
                                 .using(new FirebaseImageLoader())
                                 .load(downloadRef)

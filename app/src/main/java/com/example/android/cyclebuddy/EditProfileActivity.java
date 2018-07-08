@@ -92,8 +92,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private UserProfile mUserProfile;
     private SharedPreferences mSharedPreferences;
     private InterstitialAd mInterstitialAd;
-
-
     private boolean mProfileHasChanged = false;
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -106,7 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(Html.fromHtml("<font color='#FFFFFF'> Edit Profile </font>"));
+        setTitle(Html.fromHtml(getString(R.string.ep_action_bar)));
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
         setSupportActionBar(editProfileToolbar);
@@ -216,7 +214,8 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_picture)),
+                PICK_IMAGE);
     }
 
     @Override

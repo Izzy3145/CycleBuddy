@@ -4,17 +4,13 @@
     <!-- activity headings -->
     <string name="cycle_buddy">Cycle Buddy</string>
     <string name="cycle_buddy_blurb">Building cycling confidence with buddies</string>
-    <string name="search_rides">Search Rides</string>
-    <string name="offer_rides">Offer A Ride</string>
     <string name="messages">Messages</string>
-    <string name="view_profile">View Profile</string>
     <string name="edit_profile">Edit Profile</string>
 
     <string name="roboto_regular">RobotoRegular.ttf</string>
 
     <!-- shared preference strings -->
     <string name="preference_user_ID">preference User ID</string>
-    <string name="preference_photo_UUID">photo UUID</string>
 
     <!-- navigation titles -->
     <string name="title_ride">Ride</string>
@@ -41,12 +37,9 @@
     <string name="cyclingFrequency" translatable="false">cyclingFrequency</string>
     <string name="miniBio" translatable="false">miniBio</string>
     <string name="photoUrl" translatable="false">photoUrl</string>
-
     <string name="name">User name</string>
     <string name="save_button">Save</string>
-    <string name="reviews">Reviews</string>
     <string name="message_button">Send Message</string>
-    <string name="review_button">Leave Review</string>
     <string name="mini_bio">Mini bio:</string>
     <string name="buddy_type">Are you a buddy, or in need of a buddy?</string>
     <string name="be_a_buddy">Be a buddy</string>
@@ -69,8 +62,6 @@
     <string name="unsaved_changes_message">Leave without saving changes?</string>
     <string name="discard">Discard</string>
     <string name="continue_editing">Continue editing</string>
-    <string name="image_save_failed">Image failed to save</string>
-    <string name="task_not_complete">Task not complete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="uploading">Uploading...</string>
@@ -93,11 +84,11 @@
     <string name="vp_once_week"> ✓   I cycle about once a week</string>
     <string name="vp_once_month"> ✓   I cycle about once a month</string>
     <string name="vp_seldom_cycle"> ✓   I seldom cycle</string>
+    <string name="select_picture">Select Picture</string>
 
     <!-- search fragments strings -->
     <string name="search_results">Search Results</string>
-    <string name="click">Click</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="no_data_available">No matching routes</string>
     <string name="populate">Please populate all fields</string>
 
@@ -108,30 +99,29 @@
     <string name="search_blurb">Find yourself a Cycle Buddy by searching for offered routes below:</string>
     <string name="offer_blurb">Become a Cycle Buddy by offering your company on a ride</string>
     <string name="offer_from">Leaving from:</string>
-    <string name="offer_via">Going via:</string>
     <string name="offer_to">Going to:</string>
     <string name="offer_time_taken">Estimated time taken (mins):</string>
     <string name="return_also">Return journey also offered?</string>
     <string name="example_from">e.g. Hackney</string>
     <string name="example_to">e.g. Farringdon</string>
-    <string name="example_via">e.g. Angel</string>
     <string name="example_duration">e.g. 20</string>
 
     <!-- messages strings -->
-    <string name="no_open_conversations">No open conversations</string>
     <string name="send">Send</string>
     <string name="type_here">Type here...</string>
     <string name="hey">Hey Buddy!</string>
-    <string name="add_widget">Add widget</string>
     <string name="buddy_name">Buddy Name</string>
     <string name="received_message">received message</string>
     <string name="time_of_message">time of message</string>
-
-
 
     <string name="admob_initialise">ca-app-pub-7316772410290224~5085755047</string>
     <string name="admob_app_id_search">ca-app-pub-7316772410290224/5572021961</string>
     <string name="admob_app_id_offer">ca-app-pub-7316772410290224/3683460886</string>
     <string name="admob_app_id_save">ca-app-pub-7316772410290224/8061689598</string>
+
+    <string name="ep_action_bar"><![CDATA[<font color=\'#FFFFFF\'> Edit Profile </font>]]></string>
+    <string name="journey_time">Journey time:</string>
+    <string name="mins">mins</string>
+    <string name="vp_action_bar"><![CDATA[<font color=\'#FFFFFF\'> View Profile </font>]]></string>
 
 </resources>

@@ -82,7 +82,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(Html.fromHtml("<font color='#FFFFFF'> View Profile </font>"));
+        setTitle(Html.fromHtml(getString(R.string.vp_action_bar)));
         setContentView(R.layout.activity_view_profile);
         ButterKnife.bind(this);
 
