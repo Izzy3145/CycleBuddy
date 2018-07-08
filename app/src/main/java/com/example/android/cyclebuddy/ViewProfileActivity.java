@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.example.android.cyclebuddy.helpers.CircularImageTransform;
 import com.example.android.cyclebuddy.helpers.Constants;
@@ -37,8 +38,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -174,7 +177,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .into(profileImageView);
     }
 
-    private class getProfileAsync extends AsyncTask<Void, Void, Void>{
+    private class getProfileAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -183,6 +186,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             return null;
         }
     }
+
     //method for setting up UI based on userProfile information
     ValueEventListener profileDataListener = new ValueEventListener() {
         @Override
@@ -275,7 +279,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private String getSummaryText(String dbString) {
-        if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
+        if (dbString == null) {
+            return NO_ENTRY;
+        } else if (dbString.equals(getResources().getString(R.string.be_a_buddy))) {
             return getResources().getString(R.string.vp_want_cycle_buddy);
         } else if (dbString.equals(getResources().getString(R.string.need_a_buddy))) {
             return getResources().getString(R.string.vp_need_cycle_buddy);
@@ -306,3 +312,4 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
     }
 }
+

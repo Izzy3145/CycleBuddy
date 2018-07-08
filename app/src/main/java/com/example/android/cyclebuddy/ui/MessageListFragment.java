@@ -3,6 +3,7 @@ package com.example.android.cyclebuddy.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -52,6 +53,7 @@ public class MessageListFragment extends Fragment {
     private FirebaseListAdapter mMessageSummaryAdapter;
     private String currentUserID;
     private static final String CONVERSATION_UID = "conversation UID";
+    private Context mContext;
 
     public MessageListFragment() {
         // Required empty public constructor
@@ -86,6 +88,7 @@ public class MessageListFragment extends Fragment {
         currentUserID = mFirebaseAuth.getCurrentUser().getUid();
         mUserDbReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH);
         mStorageReference = mFirebaseStorage.getReference().child(Constants.IMAGES_PATH);
+        mContext = getActivity().getApplicationContext();
     }
 
     private void loadExistingConversations(String currentUser) {
@@ -125,7 +128,7 @@ public class MessageListFragment extends Fragment {
                                     //download the saved image
                                     StorageReference downloadRef = userRef.child(pictureUUID);
                                     // Load the image using Glide
-                                    Glide.with(getContext())
+                                    Glide.with(mContext)
                                             .using(new FirebaseImageLoader())
                                             .load(downloadRef)
                                             .transform(new CircularImageTransform(getContext()))
