@@ -29,6 +29,7 @@
             android:layout_marginTop="@dimen/medium_border"
             android:layout_marginBottom="@dimen/small_border"
             android:textSize="@dimen/large_text"
+            android:hint="@string/buddy_name"
             android:textStyle="bold" />
 
         <LinearLayout

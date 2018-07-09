@@ -41,6 +41,7 @@
             android:textSize="@dimen/title_text"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:hint="@string/your_name"
             android:layout_marginStart="@dimen/very_large_border" />
 
     </LinearLayout>
@@ -52,6 +53,7 @@
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/large_border"
         android:layout_marginEnd="@dimen/large_border"
+        android:hint="@string/buddy_or_in_need_of_a_buddy"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/large_text"/>
 
@@ -62,6 +64,7 @@
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/large_border"
         android:layout_marginEnd="@dimen/large_border"
+        android:hint="@string/how_long_have_you_been_cycling"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/large_text"/>
 
@@ -72,6 +75,7 @@
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginTop="@dimen/large_border"
         android:layout_marginEnd="@dimen/large_border"
+        android:hint="@string/how_often_do_you_cycle"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/large_text" />
 
@@ -92,6 +96,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/large_text"
         android:textColor="@color/primary_text"
+        android:hint="@string/please_enter_a_short_bio"
         android:layout_marginTop="@dimen/small_border"
         android:layout_marginStart="@dimen/large_border"
         android:layout_marginEnd="@dimen/large_border"

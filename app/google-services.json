@@ -1,39 +1,35 @@
 {
   "project_info": {
-    "project_number": "803462332884",
-    "firebase_url": "https://cyclebuddy-8220d.firebaseio.com",
-    "project_id": "cyclebuddy-8220d",
-    "storage_bucket": "cyclebuddy-8220d.appspot.com"
+    "project_number": "248427112844",
+    "firebase_url": "https://cycle-buddy-v001.firebaseio.com",
+    "project_id": "cycle-buddy-v001",
+    "storage_bucket": "cycle-buddy-v001.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:803462332884:android:3685d58ded021464",
+        "mobilesdk_app_id": "1:248427112844:android:a816b68460896d5e",
         "android_client_info": {
-          "package_name": "com.example.android.cyclebuddy"
+          "package_name": "com.riseapp.android.cyclebuddy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "803462332884-lhhjb5nh4q8lsj0jeia9v5a4q56oo9d0.apps.googleusercontent.com",
+          "client_id": "248427112844-kjfdpjecksea8sk12b4916p2bibk2inb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.android.cyclebuddy",
-            "certificate_hash": "8e25eaa56dde3414fcba768c3fdce04c769fab66"
+            "package_name": "com.riseapp.android.cyclebuddy",
+            "certificate_hash": "1e29f085e5e7d81c87b0a3623b93107eec002cec"
           }
         },
         {
-          "client_id": "803462332884-arer4cbjosrs13i5s7dr2ttmo98v7dl8.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "803462332884-arer4cbjosrs13i5s7dr2ttmo98v7dl8.apps.googleusercontent.com",
+          "client_id": "248427112844-m7gmu8ef2ffo7o60un9oesaoe6r0cshh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA9EemrQuHo7D5NVOiUSnxTz1dUJzE5CCg"
+          "current_key": "AIzaSyBfMJuxn00XCgAH9V9vE0ov4tNUrek9xbk"
         }
       ],
       "services": {
@@ -44,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "803462332884-arer4cbjosrs13i5s7dr2ttmo98v7dl8.apps.googleusercontent.com",
+              "client_id": "248427112844-m7gmu8ef2ffo7o60un9oesaoe6r0cshh.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

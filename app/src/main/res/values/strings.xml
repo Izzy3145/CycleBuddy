@@ -123,5 +123,11 @@
     <string name="journey_time">Journey time:</string>
     <string name="mins">mins</string>
     <string name="vp_action_bar"><![CDATA[<font color=\'#FFFFFF\'> View Profile </font>]]></string>
+    <string name="please_enter_a_short_bio">Please update your profile and enter a short bio</string>
+    <string name="how_often_do_you_cycle">How often do you cycle?</string>
+    <string name="how_long_have_you_been_cycling">How long have you been cycling?</string>
+    <string name="buddy_or_in_need_of_a_buddy">Buddy or in need of a buddy?</string>
+    <string name="your_name">Your name</string>
+    <string name="no_current_conversations">No current conversations</string>
 
 </resources>
