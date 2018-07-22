@@ -1,6 +1,5 @@
 package com.riseapp.android.cyclebuddy.model;
 
-import android.support.annotation.Nullable;
 
 public class UserProfile {
 
@@ -10,7 +9,7 @@ public class UserProfile {
     private String yearsCycling;
     private String cyclingFrequency;
     private String miniBio;
-    @Nullable private String photoUrl;
+    private String photoUrl;
 
     public UserProfile(){}
 

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "248427112844",
+    "firebase_url": "https://cycle-buddy-v001.firebaseio.com",
+    "project_id": "cycle-buddy-v001",
+    "storage_bucket": "cycle-buddy-v001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248427112844:android:a816b68460896d5e",
+        "android_client_info": {
+          "package_name": "com.riseapp.android.cyclebuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248427112844-kjfdpjecksea8sk12b4916p2bibk2inb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.riseapp.android.cyclebuddy",
+            "certificate_hash": "1e29f085e5e7d81c87b0a3623b93107eec002cec"
+          }
+        },
+        {
+          "client_id": "248427112844-m7gmu8ef2ffo7o60un9oesaoe6r0cshh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfMJuxn00XCgAH9V9vE0ov4tNUrek9xbk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248427112844-m7gmu8ef2ffo7o60un9oesaoe6r0cshh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

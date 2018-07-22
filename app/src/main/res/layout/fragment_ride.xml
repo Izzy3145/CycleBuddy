@@ -1,64 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
+
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.RideFragment"
+    android:layout_height="wrap_content"
     android:background="@color/dark_grey"
-    android:orientation="vertical">
+    tools:context=".ui.RideFragment">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
         android:contentDescription="@string/view_profile_cd"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_mikecyclebuddy2" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/dark_grey"
-        android:layout_marginTop="@dimen/medium_border"
-        android:layout_marginBottom="@dimen/medium_border"
-        android:layout_marginEnd="@dimen/large_border"
-        android:layout_marginStart="@dimen/large_border"
         android:layout_gravity="center_horizontal"
-        android:text="@string/cycle_buddy_blurb"
-        android:textSize="@dimen/large_text"
-        android:textColor="@color/primary_text"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@color/dark_grey"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:text="@string/cycle_buddy_blurb"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/large_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/rf_search_button"
+        style="@style/buttonStyle"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height"
-        android:layout_marginTop="@dimen/medium_border"
-        android:layout_marginBottom="@dimen/small_border"
-        android:textColor="@color/white"
-        style="@style/buttonStyle"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/normal_button"
-        android:text="@string/find_button"/>
+        android:text="@string/find_button"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rf_offer_button"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
         android:id="@+id/rf_offer_button"
+        style="@style/buttonStyle"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height"
-        android:layout_marginTop="@dimen/small_border"
-        android:layout_marginBottom="@dimen/medium_border"
-        android:layout_marginStart="@dimen/medium_border"
-        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/normal_button"
-        style="@style/buttonStyle"
-        android:text="@string/offer" />
+        android:text="@string/offer"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rf_search_button"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
 
-</LinearLayout>
+</ScrollView>

@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.riseapp.android.cyclebuddy.R;
 import com.riseapp.android.cyclebuddy.ViewProfileActivity;
-import com.riseapp.android.cyclebuddy.adapters.SearchResultsAdapter;
+import com.riseapp.android.cyclebuddy.adapter.SearchResultsAdapter;
 import com.riseapp.android.cyclebuddy.model.OfferedRoute;
 import java.util.ArrayList;
 import butterknife.BindView;
