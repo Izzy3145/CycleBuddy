@@ -23,4 +23,6 @@ The concept occurred to me as a London cyclist many years ago, and I'm proud to 
 
 Many people in London would like to begin cycling in London but are too scared or don't know where to start. This app is a social platform that gives less confident cyclists the opportunity to connect with more experienced cyclists with the intention of meeting up and cycling together in order to build cycling confidence. Users can offer or search routes to share, and use the messaging function to begin the process.
 
+D-Pad accessibilty optimised.
+
 Cycle Buddy can be found on the Google Play Store here: https://play.google.com/store/apps/details?id=com.riseapp.android.cyclebuddy
