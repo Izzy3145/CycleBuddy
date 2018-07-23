@@ -93,8 +93,8 @@
     <string name="populate">Please populate all fields</string>
 
     <!-- offer fragments strings -->
-    <string name="be_a_buddy_exclamation">Be a Cycle Buddy!</string>
-    <string name="find_a_buddy">Find a Cycle Buddy!</string>
+    <string name="be_a_buddy_exclamation">Offer a route</string>
+    <string name="find_a_buddy">Find a Cycle Buddy</string>
     <string name="find_button">Find a Buddy</string>
     <string name="search_blurb">Find yourself a Cycle Buddy by searching for offered routes below:</string>
     <string name="offer_blurb">Become a Cycle Buddy by offering your company on a ride</string>

@@ -191,8 +191,6 @@ public class MessageListFragment extends Fragment {
 
         mListView.setAdapter(mMessageSummaryAdapter);
 
-
-
         //upon clicking item, send convo pushKey to conversation fragment
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
