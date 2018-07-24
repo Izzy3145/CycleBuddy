@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
     private void setUpActionBar() {
         setSupportActionBar(mainToolbar);
-        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
+//        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
         //set action bar title with custom font
         Typeface titleFont = Typeface.createFromAsset(getAssets(), getResources().getString(R.string.roboto_regular));
         SpannableStringBuilder SS = new SpannableStringBuilder(getResources().getString(R.string.cycle_buddy));

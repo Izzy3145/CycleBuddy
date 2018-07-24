@@ -15,14 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
-import com.riseapp.android.cyclebuddy.R;
-import com.riseapp.android.cyclebuddy.helpers.CircularImageTransform;
-import com.riseapp.android.cyclebuddy.helpers.Constants;
-import com.riseapp.android.cyclebuddy.helpers.TimeUtils;
-import com.riseapp.android.cyclebuddy.model.Message;
-import com.riseapp.android.cyclebuddy.model.MessageSummary;
-import com.riseapp.android.cyclebuddy.model.UserProfile;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +28,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.riseapp.android.cyclebuddy.R;
+import com.riseapp.android.cyclebuddy.helpers.CircularImageTransform;
+import com.riseapp.android.cyclebuddy.helpers.Constants;
+import com.riseapp.android.cyclebuddy.helpers.TimeUtils;
+import com.riseapp.android.cyclebuddy.model.Message;
+import com.riseapp.android.cyclebuddy.model.MessageSummary;
+import com.riseapp.android.cyclebuddy.model.UserProfile;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -82,7 +84,7 @@ public class MessageListFragment extends Fragment {
         return view;
     }
 
-    private void initialiseMemberVariables(){
+    private void initialiseMemberVariables() {
         fm = getActivity().getFragmentManager();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
@@ -95,101 +97,118 @@ public class MessageListFragment extends Fragment {
 
     private void loadExistingConversations(String currentUser) {
         mChatDbReference = mFirebaseDatabase.getReference().child(Constants.USERS_PATH).child(currentUser)
-        .child(Constants.CHATS_PATH);
+                .child(Constants.CHATS_PATH);
+
+        int numberOfMessages;
 
         //set up the adapter to display list of message summary objects
         mMessageSummaryAdapter = new FirebaseListAdapter<MessageSummary>(getActivity(),
                 MessageSummary.class, R.layout.message_list_item, mChatDbReference) {
+
             @Override
             protected void populateView(View v, MessageSummary msgSummary, int position) {
-                    final ImageView buddyImage = (ImageView) v.findViewById(R.id.small_image_view_messages);
-                    final TextView buddyName = (TextView) v.findViewById(R.id.contact_username);
-                    final TextView lastMessage = (TextView) v.findViewById(R.id.most_recent_message);
-                    final TextView lastTimestamp = (TextView) v.findViewById(R.id.last_message_time);
+                final ImageView buddyImage = (ImageView) v.findViewById(R.id.small_image_view_messages);
+                final TextView buddyName = (TextView) v.findViewById(R.id.contact_username);
+                final TextView lastMessage = (TextView) v.findViewById(R.id.most_recent_message);
+                final TextView lastTimestamp = (TextView) v.findViewById(R.id.last_message_time);
 
-                    String buddyOne = msgSummary.getbuddyOneID();
-                    String buddyTwo = msgSummary.getbuddyTwoID();
-                    final String otherUser;
-                    if (buddyOne.equals(currentUserID)) {
-                        otherUser = buddyTwo;
-                    } else {
-                        otherUser = buddyOne;
-                    }
-
-                    //get and set username and buddy photo
-                    final StorageReference userRef = mStorageReference.child(otherUser);
-                    mUserDbReference.child(otherUser).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-
-                            if (userProfile == null){
-                                mListView.setVisibility(View.GONE);
-                                mEmptyMessages.setVisibility(View.VISIBLE);
-                            } else {
-                                mListView.setVisibility(View.VISIBLE);
-                                mEmptyMessages.setVisibility(View.GONE);
-                            }
-
-                            String buddyUsername = userProfile.getUser();
-                            buddyName.setText(buddyUsername);
-                            String pictureUUID = userProfile.getPhotoUrl();
-
-                            if (pictureUUID != null) {
-                                //download the saved image
-                                StorageReference downloadRef = userRef.child(pictureUUID);
-                                // Load the image using Glide
-                                Glide.with(mContext)
-                                        .using(new FirebaseImageLoader())
-                                        .load(downloadRef)
-                                        .transform(new CircularImageTransform(getContext()))
-                                        .into(buddyImage);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-
-                    //set up listener on messages database, and set last message to tv
-                    final DatabaseReference messageDbRef = mFirebaseDatabase.getReference().child(Constants.MESSAGES_PATH)
-                            .child(msgSummary.getConvoUID());
-                    messageDbRef.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Message newMessage = dataSnapshot.getValue(Message.class);
-                            lastMessage.setText(newMessage.getMessage());
-                            if (newMessage.getUserID().equals(otherUser)) {
-                                lastMessage.setTypeface(null, Typeface.BOLD);
-                            } else {
-                                lastMessage.setTypeface(null, Typeface.NORMAL);
-                            }
-
-                            lastTimestamp.setText(TimeUtils.displayTimeOrDate(Long.parseLong(newMessage.getTimestamp())));
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
+                String buddyOne = msgSummary.getbuddyOneID();
+                String buddyTwo = msgSummary.getbuddyTwoID();
+                final String otherUser;
+                if (buddyOne.equals(currentUserID)) {
+                    otherUser = buddyTwo;
+                } else {
+                    otherUser = buddyOne;
                 }
 
+                //get and set username and buddy photo
+                final StorageReference userRef = mStorageReference.child(otherUser);
+                mUserDbReference.child(otherUser).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+
+                        if (userProfile == null) {
+                            mListView.setVisibility(View.GONE);
+                            mEmptyMessages.setVisibility(View.VISIBLE);
+                        } else {
+                            mListView.setVisibility(View.VISIBLE);
+                            mEmptyMessages.setVisibility(View.GONE);
+                        }
+
+                        String buddyUsername = userProfile.getUser();
+                        buddyName.setText(buddyUsername);
+                        String pictureUUID = userProfile.getPhotoUrl();
+
+                        if (pictureUUID != null) {
+                            //download the saved image
+                            StorageReference downloadRef = userRef.child(pictureUUID);
+                            // Load the image using Glide
+                            Glide.with(mContext)
+                                    .using(new FirebaseImageLoader())
+                                    .load(downloadRef)
+                                    .transform(new CircularImageTransform(getContext()))
+                                    .into(buddyImage);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+
+                //set up listener on messages database, and set last message to tv
+                final DatabaseReference messageDbRef = mFirebaseDatabase.getReference().child(Constants.MESSAGES_PATH)
+                        .child(msgSummary.getConvoUID());
+                messageDbRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Message newMessage = dataSnapshot.getValue(Message.class);
+                        lastMessage.setText(newMessage.getMessage());
+                        if (newMessage.getUserID().equals(otherUser)) {
+                            lastMessage.setTypeface(null, Typeface.BOLD);
+                        } else {
+                            lastMessage.setTypeface(null, Typeface.NORMAL);
+                        }
+
+                        lastTimestamp.setText(TimeUtils.displayTimeOrDate(Long.parseLong(newMessage.getTimestamp())));
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
+
+
+            @Override
+            public int getCount() {
+                return super.getCount();
+            }
         };
 
-        mListView.setAdapter(mMessageSummaryAdapter);
+        //set empty text view if necessary
+        if (mMessageSummaryAdapter.getCount() == 0) {
+            mEmptyMessages.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        } else {
+            mEmptyMessages.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
+            mListView.setAdapter(mMessageSummaryAdapter);
+        }
+
 
         //upon clicking item, send convo pushKey to conversation fragment
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
