@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey"
     android:id="@+id/whole_offer_splash">
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/offersplash"
-        android:gravity="center"
         android:layout_margin="@dimen/very_large_border"
-        android:textSize="@dimen/title_text"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/offersplash"
         android:textColor="@color/primary_text"
-        android:textStyle="bold"/>
+        android:textSize="@dimen/title_text"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/cycle_buddy"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_mikecyclebuddy2" />
+        android:layout_marginBottom="48dp"
+        android:layout_marginTop="56dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/cycle_buddy"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_mikecyclebuddy2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

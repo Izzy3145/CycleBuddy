@@ -4,7 +4,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.text.Html;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,7 @@ import butterknife.ButterKnife;
 public class OfferSplashFragment extends Fragment implements View.OnClickListener{
 
     @BindView(R.id.whole_offer_splash)
-    RelativeLayout wholeOfferSplash;
+    ConstraintLayout wholeOfferSplash;
     private FragmentManager fm;
 
     public OfferSplashFragment() {
