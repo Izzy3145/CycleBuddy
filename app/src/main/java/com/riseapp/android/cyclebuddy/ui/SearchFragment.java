@@ -1,5 +1,6 @@
 package com.riseapp.android.cyclebuddy.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -62,6 +63,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set action bar title
+        getActivity().setTitle("Search");
         fm = getActivity().getFragmentManager();
         //get reference to the database
         mFirebaseDatabase = FirebaseDatabase.getInstance();

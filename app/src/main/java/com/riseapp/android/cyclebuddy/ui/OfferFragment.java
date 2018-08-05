@@ -70,6 +70,7 @@ public class OfferFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle("Offer");
         fm = getActivity().getFragmentManager();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mOfferDatabaseReference = mFirebaseDatabase.getReference().child(Constants.OFFERED_PATH);

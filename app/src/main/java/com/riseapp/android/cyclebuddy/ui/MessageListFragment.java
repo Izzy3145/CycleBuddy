@@ -72,6 +72,8 @@ public class MessageListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialiseMemberVariables();
+        getActivity().setTitle("Messages");
+
     }
 
     @Override
@@ -198,16 +200,17 @@ public class MessageListFragment extends Fragment {
                 return super.getCount();
             }
         };
+//TODO: get Count is alwats zero
+        mListView.setAdapter(mMessageSummaryAdapter);
 
-        //set empty text view if necessary
-        if (mMessageSummaryAdapter.getCount() == 0) {
-            mEmptyMessages.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
-        } else {
-            mEmptyMessages.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
-            mListView.setAdapter(mMessageSummaryAdapter);
-        }
+//        //set empty text view if necessary
+//        if (mMessageSummaryAdapter.getCount() == 0) {
+//            mEmptyMessages.setVisibility(View.VISIBLE);
+//            mListView.setVisibility(View.GONE);
+//        } else {
+//            mEmptyMessages.setVisibility(View.GONE);
+//            mListView.setVisibility(View.VISIBLE);
+//        }
 
 
         //upon clicking item, send convo pushKey to conversation fragment

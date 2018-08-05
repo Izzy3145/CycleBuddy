@@ -84,6 +84,8 @@ public class ConversationFragment extends android.app.Fragment implements View.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle("Conversation");
+
         if (getArguments() != null) {
             convoPushID = getArguments().getString(CONVERSATION_UID);
         }

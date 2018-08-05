@@ -236,13 +236,15 @@ public class MainActivity extends AppCompatActivity implements RideFragment.OnNa
 
     private void setUpActionBar() {
         setSupportActionBar(mainToolbar);
+        getSupportActionBar().setTitle(R.string.cycle_buddy);
 //        getSupportActionBar().setIcon(R.mipmap.ic_cb_icon_tsp);
         //set action bar title with custom font
-        Typeface titleFont = Typeface.createFromAsset(getAssets(), getResources().getString(R.string.roboto_regular));
-        SpannableStringBuilder SS = new SpannableStringBuilder(getResources().getString(R.string.cycle_buddy));
-        SS.setSpan(new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        getSupportActionBar().setTitle(SS);
+//        Typeface titleFont = Typeface.createFromAsset(getAssets(), getResources().getString(R.string.roboto_regular));
+//        SpannableStringBuilder SS = new SpannableStringBuilder(getResources().getString(R.string.cycle_buddy));
+//        SS.setSpan(new CustomTypefaceSpan("", titleFont), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+//        SS.setSpan(new ForegroundColorSpan(Color.WHITE), 0, SS.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        getSupportActionBar().setTitle(SS);
     }
+
 }
 
